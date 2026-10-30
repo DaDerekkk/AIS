@@ -1,0 +1,65 @@
+{
+  "protocol_id": "comp7611-synthetic-api-pilot-v2",
+  "frozen_at_client_date": "2026-10-27",
+  "state": "offline_verified_no_model_results",
+  "purpose": "engineering pilot, not formal benchmark or novel defense",
+  "design": {
+    "tasks": [
+      "email",
+      "record"
+    ],
+    "attack": [
+      false,
+      true
+    ],
+    "defense": [
+      "none",
+      "source-marking"
+    ],
+    "repeats": 1,
+    "episodes_per_model": 8,
+    "max_requests_per_episode": 3,
+    "retries": 0,
+    "max_models_first_run": 3,
+    "max_total_episode_requests": 72,
+    "max_smoke_requests": 3,
+    "per_socket_timeout_seconds": 90,
+    "per_model_wall_timeout_seconds": 600,
+    "comparison_unit": "paired task, not model calls",
+    "start_mode": "fixed assistant retrieval call then tool response; real model continuation"
+  },
+  "metrics": [
+    "U",
+    "strict_U",
+    "A_ever",
+    "A_final",
+    "safe_utility",
+    "technical_failure",
+    "other_side_effect_count"
+  ],
+  "safety": {
+    "data": "synthetic only",
+    "tool_effects": "memory only",
+    "real_email_or_payment": false,
+    "credential_content_in_prompts": false,
+    "host_shell_tool": false,
+    "automatic_model_fallback": false,
+    "automatic_account_rotation": false
+  },
+  "parameter_limits": "temperature=0 and max_tokens=1200 are requested but known CPA mappings may omit them; no claim they are enforced",
+  "tests": {
+    "root_unittest": 16,
+    "independent_mock_groups_reported": 15,
+    "passed": true
+  },
+  "files": {},
+  "models": [],
+  "historical_dependencies_not_exported": {
+    "code/pilot.py": "221d8c6642ad7f3a6626f83361b22d5744b893a425a2e7cbac37bff992fc69e0",
+    "code/test_pilot.py": "f4748e86c2d4d9d3d99a16fa0ef5570f7cd3b0db1a6d13c48e19a3971983a447",
+    "code/README.md": "4b8fe154df848e1957a154b44a45d435eb34554c617455bb8af784d6998c9898",
+    "config.redacted.yaml": "6bc80a7312e98b57a89fb5f0f867b044de6917dd6d83fd884e9f22a6693b32a9",
+    "run_verified_model.py": "a36d4db09403dc66edbfc25c61344c54b66df10804222470c0c313f603b9f59c"
+  },
+  "export_note": "Historical pins refer to original bytes. Only exported replay inputs are verified against the original-byte provenance map; live runners and ancillary files are not included."
+}

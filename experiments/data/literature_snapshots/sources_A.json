@@ -1,0 +1,66 @@
+[
+  {
+    "id": "A1",
+    "title": "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection",
+    "authors": [
+      "Kai Greshake",
+      "Sahar Abdelnabi",
+      "Shailesh Mishra",
+      "Christoph Endres",
+      "Thorsten Holz",
+      "Mario Fritz"
+    ],
+    "year": 2023,
+    "venue": "arXiv version read; related AISec 2023 proceedings version, pp.79–90",
+    "url": "https://arxiv.org/abs/2302.12173v2",
+    "version": "arXiv 2302.12173v2, 2023-05-05",
+    "locator": "HTML sections 3, 4.1, 5.2, 5.4; PDF title page",
+    "claim": "Retrieved third-party content can redirect LLM-integrated applications; demonstration evidence rather than a denominator-comparable ASR benchmark.",
+    "limits": "Controlled/synthetic and local-page demonstrations; black-box drift; systematic quantitative success measurement left open. Conference full text returned 403.",
+    "read_status": "targeted sections read, not full-paper close reading",
+    "accessed": "2026-10-27",
+    "other_url": "https://doi.org/10.1145/3605764.3623985"
+  },
+  {
+    "id": "A2",
+    "title": "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents",
+    "authors": [
+      "Edoardo Debenedetti",
+      "Jie Zhang",
+      "Mislav Balunovic",
+      "Luca Beurer-Kellner",
+      "Marc Fischer",
+      "Florian Tramèr"
+    ],
+    "year": 2024,
+    "venue": "NeurIPS 2024 Track on Datasets and Benchmarks",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/97091a5177d8dc64b1da8bf3e1f6fb54-Paper-Datasets_and_Benchmarks_Track.pdf",
+    "version": "official 26-page proceedings PDF; arXiv v3 date independently checked as 2024-11-24",
+    "locator": "sections 3.1–3.4 pp.3–6; 4.1 p.7; 4.3 pp.8–9; 5 p.9; Table 1 and Figure 9 captions",
+    "claim": "Separate benign utility, utility under attack without adversarial side effects, and targeted attack success; report security-case rather than user-task denominator for attack metrics.",
+    "limits": "Simulated task domains, limited initial attacks, tool filtering fails with overlapping tool needs or dynamic plans; tool count inconsistency (74 in text, 70 in Table 1 caption).",
+    "read_status": "targeted methods/results/limitations read; not all appendices or implementation verified",
+    "accessed": "2026-10-27",
+    "other_url": "https://arxiv.org/html/2406.13352v3"
+  },
+  {
+    "id": "A3",
+    "title": "InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents",
+    "authors": [
+      "Qiusi Zhan",
+      "Zhixiang Liang",
+      "Zifan Ying",
+      "Daniel Kang"
+    ],
+    "year": 2024,
+    "venue": "Findings of the Association for Computational Linguistics: ACL 2024, pp.10471–10506",
+    "url": "https://aclanthology.org/2024.findings-acl.624/",
+    "version": "official ACL Anthology proceedings PDF, August 2024; DOI 10.18653/v1/2024.findings-acl.624",
+    "locator": "sections 2.1–2.3 pp.10472–10474; 3.1–3.2 pp.10475–10476; 8 p.10480; Tables 2/3 and Appendix C.3 Table 8 headings",
+    "claim": "ASR-valid and ASR-all use different denominators; successful data stealing requires extraction and transmission, inferred via parsed tool calls.",
+    "limits": "Initial correct user-tool execution assumed; extracted content simulated; fixed enhanced prefix and single interaction with at most two attack steps; valid output rate is not end-to-end task utility.",
+    "read_status": "targeted sections read; full appendix and all table values not audited",
+    "accessed": "2026-10-27",
+    "other_url": "https://aclanthology.org/2024.findings-acl.624.pdf"
+  }
+]

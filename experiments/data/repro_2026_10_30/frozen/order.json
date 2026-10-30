@@ -1,0 +1,242 @@
+[
+  {
+    "index": 1,
+    "pair": 1,
+    "condition": "A",
+    "trial_id": "A01"
+  },
+  {
+    "index": 2,
+    "pair": 1,
+    "condition": "B",
+    "trial_id": "B01"
+  },
+  {
+    "index": 3,
+    "pair": 2,
+    "condition": "B",
+    "trial_id": "B02"
+  },
+  {
+    "index": 4,
+    "pair": 2,
+    "condition": "A",
+    "trial_id": "A02"
+  },
+  {
+    "index": 5,
+    "pair": 3,
+    "condition": "A",
+    "trial_id": "A03"
+  },
+  {
+    "index": 6,
+    "pair": 3,
+    "condition": "B",
+    "trial_id": "B03"
+  },
+  {
+    "index": 7,
+    "pair": 4,
+    "condition": "B",
+    "trial_id": "B04"
+  },
+  {
+    "index": 8,
+    "pair": 4,
+    "condition": "A",
+    "trial_id": "A04"
+  },
+  {
+    "index": 9,
+    "pair": 5,
+    "condition": "A",
+    "trial_id": "A05"
+  },
+  {
+    "index": 10,
+    "pair": 5,
+    "condition": "B",
+    "trial_id": "B05"
+  },
+  {
+    "index": 11,
+    "pair": 6,
+    "condition": "B",
+    "trial_id": "B06"
+  },
+  {
+    "index": 12,
+    "pair": 6,
+    "condition": "A",
+    "trial_id": "A06"
+  },
+  {
+    "index": 13,
+    "pair": 7,
+    "condition": "A",
+    "trial_id": "A07"
+  },
+  {
+    "index": 14,
+    "pair": 7,
+    "condition": "B",
+    "trial_id": "B07"
+  },
+  {
+    "index": 15,
+    "pair": 8,
+    "condition": "B",
+    "trial_id": "B08"
+  },
+  {
+    "index": 16,
+    "pair": 8,
+    "condition": "A",
+    "trial_id": "A08"
+  },
+  {
+    "index": 17,
+    "pair": 9,
+    "condition": "A",
+    "trial_id": "A09"
+  },
+  {
+    "index": 18,
+    "pair": 9,
+    "condition": "B",
+    "trial_id": "B09"
+  },
+  {
+    "index": 19,
+    "pair": 10,
+    "condition": "B",
+    "trial_id": "B10"
+  },
+  {
+    "index": 20,
+    "pair": 10,
+    "condition": "A",
+    "trial_id": "A10"
+  },
+  {
+    "index": 21,
+    "pair": 11,
+    "condition": "A",
+    "trial_id": "A11"
+  },
+  {
+    "index": 22,
+    "pair": 11,
+    "condition": "B",
+    "trial_id": "B11"
+  },
+  {
+    "index": 23,
+    "pair": 12,
+    "condition": "B",
+    "trial_id": "B12"
+  },
+  {
+    "index": 24,
+    "pair": 12,
+    "condition": "A",
+    "trial_id": "A12"
+  },
+  {
+    "index": 25,
+    "pair": 13,
+    "condition": "A",
+    "trial_id": "A13"
+  },
+  {
+    "index": 26,
+    "pair": 13,
+    "condition": "B",
+    "trial_id": "B13"
+  },
+  {
+    "index": 27,
+    "pair": 14,
+    "condition": "B",
+    "trial_id": "B14"
+  },
+  {
+    "index": 28,
+    "pair": 14,
+    "condition": "A",
+    "trial_id": "A14"
+  },
+  {
+    "index": 29,
+    "pair": 15,
+    "condition": "A",
+    "trial_id": "A15"
+  },
+  {
+    "index": 30,
+    "pair": 15,
+    "condition": "B",
+    "trial_id": "B15"
+  },
+  {
+    "index": 31,
+    "pair": 16,
+    "condition": "B",
+    "trial_id": "B16"
+  },
+  {
+    "index": 32,
+    "pair": 16,
+    "condition": "A",
+    "trial_id": "A16"
+  },
+  {
+    "index": 33,
+    "pair": 17,
+    "condition": "A",
+    "trial_id": "A17"
+  },
+  {
+    "index": 34,
+    "pair": 17,
+    "condition": "B",
+    "trial_id": "B17"
+  },
+  {
+    "index": 35,
+    "pair": 18,
+    "condition": "B",
+    "trial_id": "B18"
+  },
+  {
+    "index": 36,
+    "pair": 18,
+    "condition": "A",
+    "trial_id": "A18"
+  },
+  {
+    "index": 37,
+    "pair": 19,
+    "condition": "A",
+    "trial_id": "A19"
+  },
+  {
+    "index": 38,
+    "pair": 19,
+    "condition": "B",
+    "trial_id": "B19"
+  },
+  {
+    "index": 39,
+    "pair": 20,
+    "condition": "B",
+    "trial_id": "B20"
+  },
+  {
+    "index": 40,
+    "pair": 20,
+    "condition": "A",
+    "trial_id": "A20"
+  }
+]

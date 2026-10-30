@@ -1,0 +1,83 @@
+{
+  "status": "frozen",
+  "created_at_utc": "2026-10-28T07:45:23.253075+00:00",
+  "reason": "New prospective transport intervention passed one complete benign gate and independent replay; old failed evidence retained.",
+  "user_direction": "Continue autonomous local project work; experiment before report/PPT.",
+  "original_stopped_protocols_preserved": true,
+  "new_stage_not_same_as_original_single_recovery": true,
+  "planned_remaining_cells": 150,
+  "per_model_remaining": {
+    "gpt-6-luna": 71,
+    "gpt-6.1-sol": 79
+  },
+  "no_old_started_cell_repeated": true,
+  "no_prompt_case_tool_score_or_model_changes": true,
+  "candidate_tuning": {
+    "parallelism": 1,
+    "order": "alternate models, preserve each original remaining order",
+    "return_to_dispatch_gap_seconds": 5,
+    "transport_408_5xx_cooldown_seconds": 65,
+    "retry": 0,
+    "consecutive_technical_failure_episode_stop": 3,
+    "provider_stop_status": [
+      401,
+      403,
+      429
+    ],
+    "model_identity_change_stop": true,
+    "new_request_limit": 750,
+    "old_plus_new_per_model_request_limit": 480,
+    "wall_seconds": 7200,
+    "socket_seconds": 90,
+    "reserve_margin_seconds": 10
+  },
+  "diagnostic_gate": {
+    "models": [
+      "gpt-6-luna",
+      "gpt-6.1-sol"
+    ],
+    "endpoint": "http://127.0.0.1:18317/v1",
+    "cpa_pid": 95336,
+    "binary_path": "not_exported/local_runtime_reference",
+    "binary_sha256": "d651a907196bd18747d1c387db7831c6b18ff74fa59677529dd0cb5afe9fa748",
+    "summary_path": "../transport_diagnostic/run_075831/summary.json",
+    "summary_sha256": "377d30e941219fb7ace9b789f294c1dc8aa6a2b8497a448108734b95ad32f18d",
+    "events_path": "../transport_diagnostic/run_075831/events.jsonl",
+    "events_sha256": "ac7ca3dabe36fc8e5f4b5a0fbef9e09e9309823dd3841297905c367972d4c6f6",
+    "diagnostic_script_path": "../transport_diagnostic/run_route_gate.py",
+    "diagnostic_script_sha256": "2d4f266503ce67a157eb382ebc21a83685e71fb353f47f6c0258bc2b4ca16cae",
+    "service_attestation_path": "../transport_diagnostic/service_attestation.json",
+    "service_attestation_sha256": "caceee07024505b8c9f20e9673596d981c0d2d57131507e9ef8545b04cd6f8a6",
+    "independent_gate_path": "independent_route_gate.json",
+    "independent_gate_sha256": "a519200a66f78c0b4465116b21d520be3852170f5beea7d214662ad4e09ee021"
+  },
+  "files": {},
+  "freeze_preconditions_remaining": [],
+  "new_model_calls": 0,
+  "allow_report_or_ppt": false,
+  "old_prefixes_permanently_retained": 2,
+  "frozen_at_utc": "2026-10-28T08:06:09.824236+00:00",
+  "known_client_model_calls_before_new_stage": 170,
+  "transport_intervention": {
+    "config_delta": "requests.proxy-url=http://127.0.0.1:7890",
+    "config_sha256": "b4c77fb1fd085f5e89dc556586d74ce62e8f9c3a24b4e8ef7f1673c01247476f",
+    "actual_route_evidence_sha256": "d2b2bba2cf9102ed0f3c1395a3dee5945ac546490db85b141d0c19aa8d375216",
+    "change_record_sha256": "525476d130a29a8d1423da1f087ed8cfb81620bb4f31ede8a7b2a5cc6c56e4f9",
+    "no_stability_or_unique_root_cause_claim": true
+  },
+  "historical_dependencies_not_exported": {
+    "audit_diagnostics.py": "46cc8dab25c4891c90d3f7c20e6d8846a7a83af94be77904257ab8beb05678ab",
+    "audit_stage_v5b.py": "9d847ea0eaab77fadd6bbcb51cb470a60afa63722a0d136ae726d0a261e08f66",
+    "audit_v5b.py": "7c88e6435b7f9f94fe048f33ec46fc86725aea36f93d43e128d5ef379f043a1c",
+    "prior_evidence_snapshot.json": "cb0c699242ba02b6e9369ef64fe3c0d081bcf9b438cf7c327ecc084b6cdd0725",
+    "run_stage.py": "762463ea366bb83413f5c961e32929eeb033f65d5feca6b33f19811ff7112451",
+    "test_audit_diagnostics.py": "0e84e2c9edbc4a35b07aef03a9a79fcec9a9f0e7ef2e6bc3bfa0588327550aeb",
+    "test_audit_stage_v5b.py": "26dbfcf7dd2b899f22f610e42aee7684a1d9a6a9fecec2ed7199724fefc15d55",
+    "test_audit_v5b.py": "017866c68ae782930973bac5255d26004d8e6829618136fb69531a1d60946177",
+    "test_run_stage.py": "879e0cf6a9a4ba9f9a5c2892ea58a398c782fd818b9b2f8d0b18ec9f083010a5",
+    "continuation_protocol_notes.md": "af8f578e9df3ba7013ec9ff8938803d7e97fcb941fa013df4f38d284ec0a33f9",
+    "independent_route_gate.json": "a519200a66f78c0b4465116b21d520be3852170f5beea7d214662ad4e09ee021",
+    "independent_route_diagnostic_audit.json": "5d08b13153a34ef37c0e2a746973cc8cb7f6afbc28b21b474b48826dd25396ed"
+  },
+  "export_note": "Historical pins refer to original bytes. Only exported replay inputs are verified against the original-byte provenance map; live runners and ancillary files are not included."
+}

@@ -1,0 +1,125 @@
+{
+  "retrieved_date": "2026-10-27",
+  "executor": "AI agent B, gpt-6-astra / ultra",
+  "scope": "Two representative defenses plus benchmark-criticism source; no experiments",
+  "sources": [
+    {
+      "id": "B1",
+      "title": "Defending Against Indirect Prompt Injection Attacks With Spotlighting",
+      "authors": [
+        "Keegan Hines",
+        "Gary Lopez",
+        "Matthew Hall",
+        "Federico Zarfati",
+        "Yonatan Zunger",
+        "Emre Kiciman"
+      ],
+      "year": 2024,
+      "venue": "arXiv preprint; no separate venue verified",
+      "url": "https://arxiv.org/html/2403.14720v1",
+      "metadata_url": "https://arxiv.org/abs/2403.14720v1",
+      "version": "arXiv 2403.14720v1, 2024-03-20",
+      "locator": [
+        "III-A–III-D",
+        "IV-A/IV-B",
+        "V-B, Figures 7–8",
+        "V-D"
+      ],
+      "claim": [
+        "Provenance signalling through delimiting, datamarking and encoding with matching system instructions.",
+        "Keyword-payload ASR and NLP task utility are separate evaluations; input transformations are not enforced action authorization."
+      ],
+      "limits": [
+        "1000 synthetic keyword-payload documents and older GPT-family models; not an agent-specific adaptive security guarantee.",
+        "Encoding can impair task utility; delimiters and marking implementation choices affect bypass risk.",
+        "No performance percentages copied; no reproduction or code audit."
+      ],
+      "reading_depth": "Metadata and specified sections; no full proof or figure-value audit",
+      "retrieved_date": "2026-10-27",
+      "status": "Verified primary literature record"
+    },
+    {
+      "id": "B2",
+      "title": "MELON: Provable Defense Against Indirect Prompt Injection Attacks in AI Agents",
+      "authors": [
+        "Kaijie Zhu",
+        "Xianjun Yang",
+        "Jindong Wang",
+        "Wenbo Guo",
+        "William Yang Wang"
+      ],
+      "year": 2025,
+      "venue": "ICML 2025, PMLR 267:80310–80329",
+      "url": "https://proceedings.mlr.press/v267/zhu25z.html",
+      "fulltext_url": "https://arxiv.org/html/2502.05174v4",
+      "official_pdf": "https://raw.githubusercontent.com/mlresearch/v267/main/assets/zhu25z/zhu25z.pdf",
+      "version": "PMLR final metadata; author arXiv 2502.05174v4, 2025-06-10, selected PDF sections cross-checked; whole-document equality unverified",
+      "locator": [
+        "3.1–3.3 and Algorithm 1",
+        "3.3.1",
+        "3.4.1–3.4.2",
+        "4.1–4.2 and Table 1",
+        "4.4–4.5"
+      ],
+      "claim": [
+        "Masked state retains observations but replaces user task and removes prior actions; original candidate tool calls are compared to cached masked calls by semantic similarity.",
+        "Detection occurs after action generation and before execution; positive detection terminates the agent run.",
+        "The ensemble error bounds explicitly require mu_B < threshold < mu_V; this is not unconditional deployment security.",
+        "Legitimate external-instruction delegation creates false-positive interpretation disputes; response-based attacks and differing tool use can evade the detector."
+      ],
+      "limits": [
+        "Requires complete agent-state access and legitimate-user-task assumption.",
+        "Similarity representations omit some arguments; no alert is not equivalent to user authorization.",
+        "Hoeffding applicability and dependence between same-model masks were not independently validated.",
+        "No performance percentages copied; no experimental reproduction."
+      ],
+      "reading_depth": "Official metadata; author HTML targeted sections; official 20-page PDF targeted theoretical and error-analysis sections, no complete equality or proof audit",
+      "retrieved_date": "2026-10-27",
+      "status": "Verified primary literature record"
+    },
+    {
+      "id": "B3",
+      "title": "Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?",
+      "authors": [
+        "Rishika Bhagwatkar",
+        "Kevin Kasa",
+        "Abhay Puri",
+        "Gabriel Huang",
+        "Irina Rish",
+        "Graham W. Taylor",
+        "Krishnamurthy Dj Dvijotham",
+        "Alexandre Lacoste"
+      ],
+      "year": 2026,
+      "first_submission_year": 2025,
+      "venue": "arXiv preprint; formal venue unverified",
+      "url": "https://arxiv.org/html/2510.05244v2",
+      "metadata_url": "https://arxiv.org/abs/2510.05244v2",
+      "version": "arXiv 2510.05244v2, 2026-03-23; v1 2025-10-06",
+      "locator": [
+        "3 and Algorithm 1",
+        "4.2",
+        "7.1–7.3",
+        "8–10",
+        "D.1.1–D.1.2",
+        "D.2.1",
+        "E and F"
+      ],
+      "claim": [
+        "Benchmark replacement can remove task-critical data; rigid utility checks can conflate task completion and side effects.",
+        "Forced attack-tool inclusion and tool-set-only task checks can distort ASR and utility.",
+        "Abstract perfect-security wording must be restricted to tested original attacks because the paper reports successful adaptive bypasses.",
+        "Revised and original benchmark metrics must not be combined into a cross-paper ranking."
+      ],
+      "limits": [
+        "Benchmark implementation claims were read, not independently reproduced.",
+        "User trusted and tools secure except poisoned observations are explicit assumptions.",
+        "Cascade stages have conditional populations and differing budgets; no performance percentages copied.",
+        "LLM sanitization is not deterministic authorization; semantic fidelity and classifier errors need independent testing."
+      ],
+      "reading_depth": "Metadata and sections 3,4.2,7–10,D,E,F; no full table or benchmark-code audit",
+      "retrieved_date": "2026-10-27",
+      "status": "Verified primary literature record"
+    }
+  ]
+}

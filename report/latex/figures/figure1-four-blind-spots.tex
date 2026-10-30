@@ -1,0 +1,8 @@
+\begin{tikzpicture}[box/.style={draw=accent,fill=pale,rounded corners=2pt,text width=13.4cm,align=left,inner sep=4pt,font=\small},every path/.style={draw=accent,thick}]
+\node[box] (u) at (0,0) {\textbf{Trusted user query: scope lock [Blind spot 2]}\\Only the end field; legitimate delegation boundary};
+\node[box] (r) at (0,-1.35) {\textbf{Retrieved reference: delegated rules or injection [1]}\\Authorized business rule vs. injected prerequisite};
+\node[box] (m) at (0,-2.70) {\textbf{LLM and defense layers [1]}\\Provenance / Hierarchy / MELON / CaMeL};
+\node[box] (t) at (0,-4.05) {\textbf{Tool execution ledger [3, 4]}\\Allowed slot vs. value error; A\_ever vs. A\_final};
+\node[box] (f) at (0,-5.40) {\textbf{Assistant final reply [4]}\\Omitted side effect vs. rationalized disclosure};
+\draw[->] (u)--(r);\draw[->] (r)--(m);\draw[->] (m)--(t);\draw[->] (t)--(f);
+\end{tikzpicture}

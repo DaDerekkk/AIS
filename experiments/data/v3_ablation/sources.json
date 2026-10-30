@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "retrieved_at": "2026-10-27T14:36:43.637836+00:00",
+  "commit_resolution_url": "https://api.github.com/repos/ethz-spylab/agentdojo/commits/main",
+  "resolved_commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+  "resolved_commit_date": "2026-06-02T09:59:58Z",
+  "repository": "https://github.com/ethz-spylab/agentdojo",
+  "route": "agent-reach GitHub route; gh unavailable, public GitHub API/raw fallback, no credentials",
+  "license": "MIT; complete copyright and permission notice retained as sources/LICENSE",
+  "files": [
+    {
+      "id": "src/agentdojo/default_suites/v1/workspace/injection_tasks.py",
+      "repository": "ethz-spylab/agentdojo",
+      "commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+      "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1/workspace/injection_tasks.py",
+      "local_path": "sources/src__agentdojo__default_suites__v1__workspace__injection_tasks.py",
+      "bytes": 10615,
+      "sha256": "03e0894ffb544a79fd0bfd2c62cc5f90b19a2b1d429068d800239bfd020b6dcc",
+      "status": "downloaded; relevant portions read",
+      "license": "MIT"
+    },
+    {
+      "id": "LICENSE",
+      "repository": "ethz-spylab/agentdojo",
+      "commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+      "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/LICENSE",
+      "local_path": "sources/LICENSE",
+      "bytes": 1161,
+      "sha256": "4285a071f2d382338e52b4fb0a186d952984a34d43a33d8872e1a1d8cb43401e",
+      "status": "downloaded; relevant portions read",
+      "license": "MIT"
+    },
+    {
+      "id": "src/agentdojo/default_suites/v1_2/workspace/user_tasks.py",
+      "repository": "ethz-spylab/agentdojo",
+      "commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+      "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1_2/workspace/user_tasks.py",
+      "local_path": "sources/src__agentdojo__default_suites__v1_2__workspace__user_tasks.py",
+      "bytes": 8951,
+      "sha256": "6b21b84053d1ac1703674e75d75dd4986e489d3434fcf60e8707b96114ab03bb",
+      "status": "downloaded only; not read or used as case anchor",
+      "license": "MIT"
+    },
+    {
+      "id": "README.md",
+      "repository": "ethz-spylab/agentdojo",
+      "commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+      "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/README.md",
+      "local_path": "sources/README.md",
+      "bytes": 3184,
+      "sha256": "d8c6460ecce9bbf59ed300fbc74b4440188f74cd147a7611836270be49e7660e",
+      "status": "downloaded; relevant portions read",
+      "license": "MIT"
+    },
+    {
+      "id": "src/agentdojo/default_suites/v1_2/workspace/injection_tasks.py",
+      "repository": "ethz-spylab/agentdojo",
+      "commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+      "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1_2/workspace/injection_tasks.py",
+      "local_path": "sources/src__agentdojo__default_suites__v1_2__workspace__injection_tasks.py",
+      "bytes": 17855,
+      "sha256": "d11a9a4aa86085a1b0e8cea20652dd20f903adedfc6065175a0ead858c29e4a3",
+      "status": "downloaded; task class/goal index inspected; not used as case anchor",
+      "license": "MIT"
+    },
+    {
+      "id": "src/agentdojo/default_suites/v1/workspace/user_tasks.py",
+      "repository": "ethz-spylab/agentdojo",
+      "commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+      "url": "https://raw.githubusercontent.com/ethz-spylab/agentdojo/089ed468cf3ed0322acc66b0211f26d9d90dbf60/src/agentdojo/default_suites/v1/workspace/user_tasks.py",
+      "local_path": "sources/src__agentdojo__default_suites__v1__workspace__user_tasks.py",
+      "bytes": 55415,
+      "sha256": "d2a550b812b7f40ee2dea17ac19d44f2dd063d103524118216b563eca6e44171",
+      "status": "downloaded; relevant portions read",
+      "license": "MIT"
+    }
+  ],
+  "fixture_sha256": "83875e2b5ef24142e47909d2d68b961f0ec2db915d95cbee5ff19eca190f757d"
+}

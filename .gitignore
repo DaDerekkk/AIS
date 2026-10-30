@@ -1,0 +1,23 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+# TeX intermediate files; keep the compiled deliverable PDFs
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+# Operating system and editor state
+.DS_Store
+._*
+.idea/
+.vscode/
+# Never publish local credentials or dependency/build directories
+.env
+.env.*
+node_modules/
+.build/

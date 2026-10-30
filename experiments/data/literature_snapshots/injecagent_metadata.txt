@@ -1,0 +1,248 @@
+Title: InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents
+
+URL Source: https://aclanthology.org/2024.findings-acl.624/
+
+Published Time: Tue, 27 Oct 2026 09:58:10 GMT
+
+Markdown Content:
+[![Image 1: ACL Logo](https://aclanthology.org/images/acl-logo.svg)ACL Anthology](https://aclanthology.org/)
+
+*   [About](https://aclanthology.org/2024.findings-acl.624/#)
+    *   [Announcements](https://aclanthology.org/posts/)
+    *   [Communication channels](https://aclanthology.org/faq/news/)
+    *   [Related work](https://aclanthology.org/faq/related-work/)
+    *   [Copyright](https://aclanthology.org/faq/copyright/)
+    *   
+* * *
+
+    *   [Credits](https://aclanthology.org/info/credits/)
+    *   [Volunteer](https://aclanthology.org/faq/volunteer/)
+    *   [Development](https://aclanthology.org/info/development/)
+    *   [Feedback](https://aclanthology.org/faq/feedback/)
+
+*   [Using](https://aclanthology.org/2024.findings-acl.624/#)
+    *   [Author directory](https://aclanthology.org/people/)
+    *   [Citing papers](https://aclanthology.org/faq/bib/)
+    *   [Links in the Anthology](https://aclanthology.org/faq/linking/)
+    *   [Data access](https://aclanthology.org/faq/api/)
+    *   
+* * *
+
+    *   [All FAQs](https://aclanthology.org/faq/)
+    *   
+* * *
+
+    *   ###### Details
+
+    *   [Anthology identifiers](https://aclanthology.org/info/ids/)
+    *   [Names](https://aclanthology.org/info/names/)
+    *   [ORCID iDs](https://aclanthology.org/info/orcid/)
+    *   [DOIs](https://aclanthology.org/faq/doi/)
+    *   [Verified authors](https://aclanthology.org/info/verification/)
+
+*   [Contributions](https://aclanthology.org/2024.findings-acl.624/#)
+    *   [Submissions](https://aclanthology.org/info/contrib/)
+    *   [Corrections](https://aclanthology.org/info/corrections/)
+    *   [Maintain author pages](https://aclanthology.org/info/author-pages/)
+    *   [Attachments](https://aclanthology.org/faq/attachments/)
+
+*   [GitHub](https://github.com/acl-org/acl-anthology/)
+
+## [I njec A gent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents](https://aclanthology.org/2024.findings-acl.624.pdf)
+
+[Qiusi Zhan](https://aclanthology.org/people/qiusi-zhan/), [Zhixiang Liang](https://aclanthology.org/people/zhixiang-liang/), [Zifan Ying](https://aclanthology.org/people/zifan-ying/unverified/), [Daniel Kang](https://aclanthology.org/people/daniel-kang/)
+
+##### Correct Metadata for
+
+Use this form to create a GitHub issue with structured data describing the correction. You will need a GitHub account. Once you create that issue, the correction will be reviewed by a staff member.
+
+⚠️ Mobile Users: Submitting this form to create a new issue will only work with github.com, not the GitHub Mobile app.
+
+**Important**: The Anthology treat PDFs as authoritative. Please use this form only to correct data that is out of line with the PDF. See [our corrections guidelines](https://aclanthology.org/info/corrections/) if you need to change the PDF.
+
+Title Adjust the title. Retain tags such as <fixed-case>.
+
+Authors Adjust author names and order to match the PDF.Add Author
+
+Abstract Correct abstract if needed. Retain XML formatting tags such as <tex-math>. You may use <b>...</b> for **bold**, <i>...</i> for _italic_, <u>...</u> for underline, <sc>...</sc> for small-caps, <tt>...<tt> for typewriter text, <url>...</url> for URLs, <a href=...> for hyperlinks, and <par/> for paragraph breaks.
+
+Verification against PDF Ensure that the new title/authors match the snapshot below. (If there is no snapshot or it is too small, consult [the PDF](https://aclanthology.org/2024.findings-acl.624/#).)
+
+[![Image 2](https://aclanthology.org/2024.findings-acl.624/)](https://aclanthology.org/2024.findings-acl.624/#)
+
+Authors concatenated from the text boxes above:
+
+- [x] ALL author names match the snapshot above—including middle initials, hyphens, and accents. 
+
+Create GitHub issue for staff review
+
+* * *
+
+##### Abstract
+
+Recent work has embodied LLMs as agents, allowing them to access tools, perform actions, and interact with external content (e.g., emails or websites). However, external content introduces the risk of indirect prompt injection (IPI) attacks, where malicious instructions are embedded within the content processed by LLMs, aiming to manipulate these agents into executing detrimental actions against users. Given the potentially severe consequences of such attacks, establishing benchmarks to assess and mitigate these risks is imperative.In this work, we introduce InjecAgent, a benchmark designed to assess the vulnerability of tool-integrated LLM agents to IPI attacks. InjecAgent comprises 1,054 test cases covering 17 different user tools and 62 attacker tools. We categorize attack intentions into two primary types: direct harm to users and exfiltration of private data. We conduct a comprehensive evaluation of 30 different LLM agents and show that agents are vulnerable to IPI attacks, with ReAct-prompted GPT-4 vulnerable to attacks 24% of the time. Further investigation into an enhanced setting, where the attacker instructions are reinforced with a hacking prompt, shows additional increases in success rates. Our findings raise questions about the widespread deployment of LLM Agents.
+
+Anthology ID:2024.findings-acl.624 Volume:[Findings of the Association for Computational Linguistics: ACL 2024](https://aclanthology.org/volumes/2024.findings-acl/)Month:August Year:2024 Address:Bangkok, Thailand Editors:[Lun-Wei Ku](https://aclanthology.org/people/lun-wei-ku/), [Andre Martins](https://aclanthology.org/people/andre-f-t-martins/), [Vivek Srikumar](https://aclanthology.org/people/vivek-srikumar/)Venue:[Findings](https://aclanthology.org/venues/findings/ "Findings of the Association for Computational Linguistics")SIG:Publisher:Association for Computational Linguistics Note:Pages:10471–10506 Language:URL:[https://aclanthology.org/2024.findings-acl.624/](https://aclanthology.org/2024.findings-acl.624/)DOI:[10.18653/v1/2024.findings-acl.624](https://doi.org/10.18653/v1/2024.findings-acl.624 "To the current version of the paper by DOI")Bibkey:zhan-etal-2024-injecagent Cite (ACL):Qiusi Zhan, Zhixiang Liang, Zifan Ying, and Daniel Kang. 2024. [InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents](https://aclanthology.org/2024.findings-acl.624/). In _Findings of the Association for Computational Linguistics: ACL 2024_, pages 10471–10506, Bangkok, Thailand. Association for Computational Linguistics.Cite (Informal):[InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents](https://aclanthology.org/2024.findings-acl.624/) (Zhan et al., Findings 2024)Copy Citation:BibTeX Markdown MODS XML Endnote More options…PDF:[https://aclanthology.org/2024.findings-acl.624.pdf](https://aclanthology.org/2024.findings-acl.624.pdf)
+
+[PDF](https://aclanthology.org/2024.findings-acl.624.pdf "Open PDF of 'InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents'")[Cite](https://aclanthology.org/2024.findings-acl.624/# "Open dialog for exporting citations")[Search](https://www.semanticscholar.org/search?+q=InjecAgent%3A+Benchmarking+Indirect+Prompt+Injections+in+Tool-Integrated+Large+Language+Model+Agents "Search for 'InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents' on Semantic Scholar")[Fix data](https://aclanthology.org/2024.findings-acl.624/# "Correct problems with title, author list, and abstract")
+
+* * *
+
+##### Export citation
+
+*   [BibTeX](https://aclanthology.org/2024.findings-acl.624/#citeBibtex)
+*   [MODS XML](https://aclanthology.org/2024.findings-acl.624/#citeMods)
+*   [Endnote](https://aclanthology.org/2024.findings-acl.624/#citeEndnote)
+*   [Preformatted](https://aclanthology.org/2024.findings-acl.624/#citeMarkdown)
+
+@inproceedings{zhan-etal-2024-injecagent,
+    title = "{I}njec{A}gent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents",
+    author = "Zhan, Qiusi  and
+      Liang, Zhixiang  and
+      Ying, Zifan  and
+      Kang, Daniel",
+    editor = "Ku, Lun-Wei  and
+      Martins, Andre  and
+      Srikumar, Vivek",
+    booktitle = "Findings of the {A}ssociation for {C}omputational {L}inguistics: {ACL} 2024",
+    month = aug,
+    year = "2024",
+    address = "Bangkok, Thailand",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.findings-acl.624/",
+    doi = "10.18653/v1/2024.findings-acl.624",
+    pages = "10471--10506",
+    abstract = "Recent work has embodied LLMs as agents, allowing them to access tools, perform actions, and interact with external content (e.g., emails or websites). However, external content introduces the risk of indirect prompt injection (IPI) attacks, where malicious instructions are embedded within the content processed by LLMs, aiming to manipulate these agents into executing detrimental actions against users. Given the potentially severe consequences of such attacks, establishing benchmarks to assess and mitigate these risks is imperative.In this work, we introduce InjecAgent, a benchmark designed to assess the vulnerability of tool-integrated LLM agents to IPI attacks. InjecAgent comprises 1,054 test cases covering 17 different user tools and 62 attacker tools. We categorize attack intentions into two primary types: direct harm to users and exfiltration of private data. We conduct a comprehensive evaluation of 30 different LLM agents and show that agents are vulnerable to IPI attacks, with ReAct-prompted GPT-4 vulnerable to attacks 24{\%} of the time. Further investigation into an enhanced setting, where the attacker instructions are reinforced with a hacking prompt, shows additional increases in success rates. Our findings raise questions about the widespread deployment of LLM Agents."
+}
+
+[Download as File](https://aclanthology.org/2024.findings-acl.624/)Copy to Clipboard
+
+<?xml version="1.0" encoding="UTF-8"?>
+<modsCollection xmlns="http://www.loc.gov/mods/v3">
+<mods ID="zhan-etal-2024-injecagent">
+    <titleInfo>
+        <title>InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents</title>
+    </titleInfo>
+    <name type="personal">
+        <namePart type="given">Qiusi</namePart>
+        <namePart type="family">Zhan</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <name type="personal">
+        <namePart type="given">Zhixiang</namePart>
+        <namePart type="family">Liang</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <name type="personal">
+        <namePart type="given">Zifan</namePart>
+        <namePart type="family">Ying</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <name type="personal">
+        <namePart type="given">Daniel</namePart>
+        <namePart type="family">Kang</namePart>
+        <role>
+            <roleTerm authority="marcrelator" type="text">author</roleTerm>
+        </role>
+    </name>
+    <originInfo>
+        <dateIssued>2024-08</dateIssued>
+    </originInfo>
+    <typeOfResource>text</typeOfResource>
+    <relatedItem type="host">
+        <titleInfo>
+            <title>Findings of the Association for Computational Linguistics: ACL 2024</title>
+        </titleInfo>
+        <name type="personal">
+            <namePart type="given">Lun-Wei</namePart>
+            <namePart type="family">Ku</namePart>
+            <role>
+                <roleTerm authority="marcrelator" type="text">editor</roleTerm>
+            </role>
+        </name>
+        <name type="personal">
+            <namePart type="given">Andre</namePart>
+            <namePart type="family">Martins</namePart>
+            <role>
+                <roleTerm authority="marcrelator" type="text">editor</roleTerm>
+            </role>
+        </name>
+        <name type="personal">
+            <namePart type="given">Vivek</namePart>
+            <namePart type="family">Srikumar</namePart>
+            <role>
+                <roleTerm authority="marcrelator" type="text">editor</roleTerm>
+            </role>
+        </name>
+        <originInfo>
+            <publisher>Association for Computational Linguistics</publisher>
+            <place>
+                <placeTerm type="text">Bangkok, Thailand</placeTerm>
+            </place>
+        </originInfo>
+        <genre authority="marcgt">conference publication</genre>
+    </relatedItem>
+    <abstract>Recent work has embodied LLMs as agents, allowing them to access tools, perform actions, and interact with external content (e.g., emails or websites). However, external content introduces the risk of indirect prompt injection (IPI) attacks, where malicious instructions are embedded within the content processed by LLMs, aiming to manipulate these agents into executing detrimental actions against users. Given the potentially severe consequences of such attacks, establishing benchmarks to assess and mitigate these risks is imperative.In this work, we introduce InjecAgent, a benchmark designed to assess the vulnerability of tool-integrated LLM agents to IPI attacks. InjecAgent comprises 1,054 test cases covering 17 different user tools and 62 attacker tools. We categorize attack intentions into two primary types: direct harm to users and exfiltration of private data. We conduct a comprehensive evaluation of 30 different LLM agents and show that agents are vulnerable to IPI attacks, with ReAct-prompted GPT-4 vulnerable to attacks 24% of the time. Further investigation into an enhanced setting, where the attacker instructions are reinforced with a hacking prompt, shows additional increases in success rates. Our findings raise questions about the widespread deployment of LLM Agents.</abstract>
+    <identifier type="citekey">zhan-etal-2024-injecagent</identifier>
+    <identifier type="doi">10.18653/v1/2024.findings-acl.624</identifier>
+    <location>
+        <url>https://aclanthology.org/2024.findings-acl.624/</url>
+    </location>
+    <part>
+        <date>2024-08</date>
+        <extent unit="page">
+            <start>10471</start>
+            <end>10506</end>
+        </extent>
+    </part>
+</mods>
+</modsCollection>
+
+[Download as File](https://aclanthology.org/2024.findings-acl.624/)Copy to Clipboard
+
+%0 Conference Proceedings
+%T InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents
+%A Zhan, Qiusi
+%A Liang, Zhixiang
+%A Ying, Zifan
+%A Kang, Daniel
+%Y Ku, Lun-Wei
+%Y Martins, Andre
+%Y Srikumar, Vivek
+%S Findings of the Association for Computational Linguistics: ACL 2024
+%D 2024
+%8 August
+%I Association for Computational Linguistics
+%C Bangkok, Thailand
+%F zhan-etal-2024-injecagent
+%X Recent work has embodied LLMs as agents, allowing them to access tools, perform actions, and interact with external content (e.g., emails or websites). However, external content introduces the risk of indirect prompt injection (IPI) attacks, where malicious instructions are embedded within the content processed by LLMs, aiming to manipulate these agents into executing detrimental actions against users. Given the potentially severe consequences of such attacks, establishing benchmarks to assess and mitigate these risks is imperative.In this work, we introduce InjecAgent, a benchmark designed to assess the vulnerability of tool-integrated LLM agents to IPI attacks. InjecAgent comprises 1,054 test cases covering 17 different user tools and 62 attacker tools. We categorize attack intentions into two primary types: direct harm to users and exfiltration of private data. We conduct a comprehensive evaluation of 30 different LLM agents and show that agents are vulnerable to IPI attacks, with ReAct-prompted GPT-4 vulnerable to attacks 24% of the time. Further investigation into an enhanced setting, where the attacker instructions are reinforced with a hacking prompt, shows additional increases in success rates. Our findings raise questions about the widespread deployment of LLM Agents.
+%R 10.18653/v1/2024.findings-acl.624
+%U https://aclanthology.org/2024.findings-acl.624/
+%U https://doi.org/10.18653/v1/2024.findings-acl.624
+%P 10471-10506
+
+[Download as File](https://aclanthology.org/2024.findings-acl.624/)Copy to Clipboard
+
+##### Markdown (Informal)
+
+[InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents](https://aclanthology.org/2024.findings-acl.624/) (Zhan et al., Findings 2024)
+
+*   [InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents](https://aclanthology.org/2024.findings-acl.624/) (Zhan et al., Findings 2024)
+
+##### ACL
+
+*   Qiusi Zhan, Zhixiang Liang, Zifan Ying, and Daniel Kang. 2024. [InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents](https://aclanthology.org/2024.findings-acl.624/). In _Findings of the Association for Computational Linguistics: ACL 2024_, pages 10471–10506, Bangkok, Thailand. Association for Computational Linguistics.
+
+Copy Markdown to Clipboard Copy ACL to Clipboard
+
+[![Image 3: Creative Commons License](https://i.creativecommons.org/l/by/4.0/88x31.png)](http://creativecommons.org/licenses/by/4.0/) ACL materials are Copyright ©1963–2026 ACL; other materials are copyrighted by their respective copyright holders. Materials prior to 2016 here are licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 3.0 International License](https://creativecommons.org/licenses/by-nc-sa/3.0/). Permission is granted to make copies for the purposes of teaching and research. Materials published in or after 2016 are licensed on a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
+
+The ACL Anthology is managed and built by the [ACL Anthology team](https://aclanthology.org/info/credits/) of volunteers.
+
+_Site last built on 27 October 2026 at 09:50 UTC with [commit c7e7c44](https://github.com/acl-org/acl-anthology/tree/c7e7c44f91fba03d84e9fd7c57d693c4d6523e86)._

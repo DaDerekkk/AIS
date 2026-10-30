@@ -1,0 +1,66 @@
+{
+  "version": "v4-bulk-development-1",
+  "frozen_at_utc": "2026-10-28T03:45:16.770014+00:00",
+  "models": [
+    "gpt-6-luna",
+    "gpt-6.1-sol"
+  ],
+  "semantic_tasks": 8,
+  "action_families": 4,
+  "authority": [
+    "scoped",
+    "explicit"
+  ],
+  "defenses": [
+    "baseline",
+    "both"
+  ],
+  "source_condition": [
+    "clean",
+    "attack"
+  ],
+  "episodes": 128,
+  "per_model_episodes": 64,
+  "max_calls_per_episode": 5,
+  "max_episode_http_calls": 640,
+  "smoke_http_calls_max": 2,
+  "total_http_attempts_max": 642,
+  "parallel_workers": 2,
+  "worker_wall_seconds": 1200,
+  "parent_stop_grace_seconds": 15,
+  "smoke_socket_timeout_each_seconds": 90,
+  "retries": 0,
+  "order_seed": 761104,
+  "freeze_before_any_v4_model_call": true,
+  "classification": "custom synthetic development calibration, not AgentDojo reproduction or held-out test",
+  "primary_reporting": [
+    "all attempted, exposure and valid exposure denominators",
+    "post-exposure target hit, A_ever, A_final",
+    "U, strict-once-operation, safe utility, technical errors",
+    "paired task contrasts without treating cells as independent task samples"
+  ],
+  "explicit_intervention": "generic same-scope boundary reinforcement; no attack-specific oracle identifiers",
+  "no_outcome_guarantee": true,
+  "source_commit": "089ed468cf3ed0322acc66b0211f26d9d90dbf60",
+  "files": {
+    "cases.json": "7ec66829f6f7388f65c558a98b8c9fc19ec7c70e108a9d04a864fe73c9e2de96",
+    "../v3_ablation/sources.json": "4e55a24dd99d8637f1512cf02c841d48f35285039e6291f2bb8014b07fa8d1b6"
+  },
+  "historical_dependencies_not_exported": {
+    "run_bulk.py": "1feb2a5bd4cfc03f2006ba22393b981d25909737749b2aae67bf1f597e25012c",
+    "test_bulk.py": "8e33806c8e7ac30c1b49a69d8a1f11876cb21e423f4d765cd04ae785b3f3583e",
+    "case_design.md": "261885d0ee2aa67ba796d428dbf519199d334e5a74389be0d20a630d1569a124",
+    "README.md": "41ade3e986604d1bacb74bd48dfba42de13e549df24f72ba6bf0d2880d874e26",
+    "audit_v4.py": "cf43b19f7cf9e20b623cd712d308de0a415ed194bdb1a0ac9837ae6a3ea1654f",
+    "test_audit_v4.py": "b63cc28fde9a022511ae1eeb6edd0d82cbed477d26a70fc2664e24f04829a737",
+    "../v3_ablation/run_dev.py": "8634d617a2a9dadbb37665ee74a17451ea026d977d21fc97767c49cb97518fc6",
+    "../v2_pilot/code/pilot.py": "221d8c6642ad7f3a6626f83361b22d5744b893a425a2e7cbac37bff992fc69e0",
+    "../v3_ablation/sources/src__agentdojo__default_suites__v1__workspace__injection_tasks.py": "03e0894ffb544a79fd0bfd2c62cc5f90b19a2b1d429068d800239bfd020b6dcc",
+    "../v3_ablation/sources/LICENSE": "4285a071f2d382338e52b4fb0a186d952984a34d43a33d8872e1a1d8cb43401e",
+    "../v3_ablation/sources/src__agentdojo__default_suites__v1_2__workspace__user_tasks.py": "6b21b84053d1ac1703674e75d75dd4986e489d3434fcf60e8707b96114ab03bb",
+    "../v3_ablation/sources/README.md": "d8c6460ecce9bbf59ed300fbc74b4440188f74cd147a7611836270be49e7660e",
+    "../v3_ablation/sources/src__agentdojo__default_suites__v1_2__workspace__injection_tasks.py": "d11a9a4aa86085a1b0e8cea20652dd20f903adedfc6065175a0ead858c29e4a3",
+    "../v3_ablation/sources/src__agentdojo__default_suites__v1__workspace__user_tasks.py": "d2a550b812b7f40ee2dea17ac19d44f2dd063d103524118216b563eca6e44171"
+  },
+  "export_note": "Historical pins refer to original bytes. Only exported replay inputs are verified against the original-byte provenance map; live runners and ancillary files are not included."
+}

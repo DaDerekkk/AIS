@@ -1,0 +1,72 @@
+[
+  {
+    "archived_path": "experiments/data/literature_snapshots/agentdojo_pdf_cached.txt",
+    "sha256": "bc6ddba2f0c5a56ca3ece985508f48f565a95e1430fa7862b8d2224a228db19c",
+    "acquisition": "Byte-identical copy of pre-existing local cache; no network request",
+    "primary_url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/97091a5177d8dc64b1da8bf3e1f6fb54-Paper-Datasets_and_Benchmarks_Track.pdf",
+    "boundary": "Prior cache provenance, not new download authentication or PDF visual verification"
+  },
+  {
+    "archived_path": "experiments/data/literature_snapshots/agentdojo_html_cached.txt",
+    "sha256": "1eee16e9b1fae7fe1e856af2e91cbdb9b70679abdc6dbc46080ef8e526a4a45d",
+    "acquisition": "Byte-identical copy of pre-existing local cache; no network request",
+    "primary_url": "https://arxiv.org/html/2406.13352v3",
+    "boundary": "Prior cache provenance, not new download authentication or PDF visual verification"
+  },
+  {
+    "paper_id": "C2",
+    "archived_path": "experiments/data/literature_snapshots/camel_v2.txt",
+    "sha256": "5749e55546a8a5159491adeaa9c65f23c11b274ff32b885ab78b085fd50ab6cd",
+    "primary_url": "https://arxiv.org/html/2503.18813v2",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Full-text extract supplied by user; version provenance supplied, not fetched live"
+  },
+  {
+    "paper_id": "C1",
+    "archived_path": "experiments/data/literature_snapshots/instruction_hierarchy_v1.txt",
+    "sha256": "507d92af18c2919d73a8e2d3845db65518c2b5f812f38100e8ef77f10a3d81df",
+    "primary_url": "https://arxiv.org/html/2404.13208v1",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Full-text extract supplied by user; version provenance supplied, not fetched live"
+  },
+  {
+    "paper_id": "A1",
+    "archived_path": "experiments/data/literature_snapshots/greshake_v2.txt",
+    "sha256": "236ddc8bfaf08c35c34aaa4eea738925effe05e35fb925bc54f110c45dd2863a",
+    "primary_url": "https://arxiv.org/html/2302.12173v2",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Pre-existing full-text reader cache"
+  },
+  {
+    "paper_id": "A3",
+    "archived_path": "experiments/data/literature_snapshots/injecagent_metadata.txt",
+    "sha256": "dd338a767fd749ea4ef18b4c89e55eaf602ce2530836cfce5f939bdafc5d56eb",
+    "primary_url": "https://aclanthology.org/2024.findings-acl.624/",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Primary publisher metadata and abstract only; NOT a full-text extract"
+  },
+  {
+    "paper_id": "B1",
+    "archived_path": "experiments/data/literature_snapshots/spotlighting.txt",
+    "sha256": "adfa5d5fda3b55ef4541a59930928404ec542c8088cfefee3b4fe520fb427ea2",
+    "primary_url": "https://arxiv.org/html/2403.14720",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Full-text reader cache; URL unversioned, prior source ledger records v1"
+  },
+  {
+    "paper_id": "B2",
+    "archived_path": "experiments/data/literature_snapshots/melon.txt",
+    "sha256": "70e1b10b4fe96a7e7e0146fa18cd4b3d7c932f20e0a469a7e6cd5494a2bc11a3",
+    "primary_url": "https://proceedings.mlr.press/v267/zhu25z.html",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Pre-existing official PDF text extraction, selected sections checked"
+  },
+  {
+    "paper_id": "B3",
+    "archived_path": "experiments/data/literature_snapshots/firewalls_v2.txt",
+    "sha256": "37ac4d6598e845817aee8b64398a7521a255abd556a38c5422e441d99a9ca9ca",
+    "primary_url": "https://arxiv.org/html/2510.05244v2",
+    "acquisition": "Byte-identical offline copy; no network",
+    "boundary": "Pre-existing full-text reader cache"
+  }
+]

@@ -1,0 +1,8 @@
+\begin{tikzpicture}[box/.style={draw=accent,fill=pale,text width=7.0cm,align=center,inner sep=5pt,font=\small},every path/.style={draw=accent,thick}]
+\node[box,text width=14.9cm] (all) at (0,0) {\textbf{416 evaluated episodes = 376 historical + 40 prospective}};
+\node[box] (h) at (-4,-1.4) {\textbf{Historical: 24 pilot + 352 autonomous}\\302 safe; 3 target; 0 other mutation\\5 task error; 40 incomplete; 2 prefix};
+\node[box] (r) at (4,-1.4) {\textbf{Prospective A20 / B20: selected case}\\Valid target hits: 7/17 vs. 0/19\\Fisher p = 0.00233; attack vs. clean};
+\node[box] (flag) at (-4,-3.0) {\textbf{v5 flagged episodes: 6}\\5/6 in-slot errors; 1/6 target hit};
+\node[box] (disc) at (4,-3.0) {\textbf{10 combined target-hit traces}\\8/10 omitted; 2/10 rationalized\\A11: ever hit, restored final state};
+\draw[->] (all.south)--(h.north);\draw[->] (all.south)--(r.north);\draw[->] (h)--(flag);\draw[->] (h.south east)--(disc.north west);\draw[->] (r)--(disc);
+\end{tikzpicture}

@@ -1,0 +1,87 @@
+{
+  "status": "frozen",
+  "created_at_utc": "2026-10-28T06:38:47.855166+00:00",
+  "amendment": "Post-stop prospective one-time recovery, preserving every started cell including errors and incomplete prefixes; no outcome replacement",
+  "source_run": "ad8590f56fbb",
+  "source_started": {
+    "gpt-6-luna": [
+      "hold5_email_cross_manifest/forged_conversation/both/attack",
+      "hold5_record_transition_table/workflow_dependency/both/attack",
+      "hold5_email_cross_manifest/few_shot_poisoning/both/attack",
+      "hold5_share_identity_join/forged_conversation/baseline/attack",
+      "hold5_share_permission_policy/forged_conversation/both/attack",
+      "hold5_email_priority_route/few_shot_poisoning/baseline/attack",
+      "hold5_share_minimal_coverage/workflow_dependency/both/attack",
+      "hold5_share_identity_join/workflow_dependency/both/attack",
+      "hold5_share_minimal_coverage/few_shot_poisoning/both/attack",
+      "hold5_share_permission_policy/workflow_dependency/baseline/attack",
+      "hold5_email_revision_precedence/few_shot_poisoning/both/attack",
+      "hold5_share_identity_join/workflow_dependency/baseline/attack",
+      "hold5_email_cross_manifest/workflow_dependency/baseline/attack",
+      "hold5_record_transition_table/workflow_dependency/baseline/attack",
+      "hold5_calendar_end_from_segments/workflow_dependency/both/attack",
+      "hold5_email_cross_manifest/few_shot_poisoning/baseline/attack",
+      "hold5_share_permission_policy/forged_conversation/baseline/attack",
+      "hold5_share_identity_join/clean/both/clean",
+      "hold5_calendar_title_rule/few_shot_poisoning/both/attack",
+      "hold5_record_longest_prefix/forged_conversation/both/attack",
+      "hold5_record_longest_prefix/workflow_dependency/both/attack",
+      "hold5_record_longest_prefix/workflow_dependency/baseline/attack"
+    ],
+    "gpt-6.1-sol": [
+      "hold5_email_cross_manifest/forged_conversation/both/attack",
+      "hold5_record_transition_table/workflow_dependency/both/attack",
+      "hold5_email_cross_manifest/few_shot_poisoning/both/attack",
+      "hold5_share_identity_join/forged_conversation/baseline/attack",
+      "hold5_share_permission_policy/forged_conversation/both/attack",
+      "hold5_email_priority_route/few_shot_poisoning/baseline/attack",
+      "hold5_share_minimal_coverage/workflow_dependency/both/attack",
+      "hold5_share_identity_join/workflow_dependency/both/attack",
+      "hold5_share_minimal_coverage/few_shot_poisoning/both/attack",
+      "hold5_share_permission_policy/workflow_dependency/baseline/attack",
+      "hold5_email_revision_precedence/few_shot_poisoning/both/attack",
+      "hold5_share_identity_join/workflow_dependency/baseline/attack",
+      "hold5_email_cross_manifest/workflow_dependency/baseline/attack",
+      "hold5_record_transition_table/workflow_dependency/baseline/attack",
+      "hold5_calendar_end_from_segments/workflow_dependency/both/attack"
+    ]
+  },
+  "source_http_attempts": {
+    "gpt-6-luna": 57,
+    "gpt-6.1-sol": 44
+  },
+  "remaining_episodes": {
+    "gpt-6-luna": 74,
+    "gpt-6.1-sol": 81
+  },
+  "per_model_request_capacity": {
+    "gpt-6-luna": 423,
+    "gpt-6.1-sol": 436
+  },
+  "max_remaining_episode_requests": 775,
+  "previous_episode_requests": 101,
+  "previous_smokes": 2,
+  "separate_diagnostic_requests": 1,
+  "new_smokes_max": 2,
+  "combined_stage_client_attempts_upper_bound": 881,
+  "original_stage_budget": 962,
+  "remaining_recovery_runs_allowed": 1,
+  "no_further_recovery": true,
+  "unchanged_case_and_defense_policy": true,
+  "files": {
+    "runs/ad8590f56fbb/gpt-6-luna/events.jsonl": "8e2a93b83ac95953e75622ceed5111449f889a638f623e42cb860671936d108f",
+    "runs/ad8590f56fbb/gpt-6.1-sol/events.jsonl": "4fc3d35afa40007cc40bab9a8b2d292e41255fef9d13bb0592df1d5ef7ff96d7",
+    "frozen_protocol.json": "d2bfac5ae17965d3faead541fdf23693e4b8d77b20bbda5eefaae2755cfc89b3"
+  },
+  "frozen_at_utc": "2026-10-28T06:44:36.682048+00:00",
+  "independent_preflight": "GO; six recovery-audit and five continuation tests passed; original 24 tests unchanged",
+  "historical_dependencies_not_exported": {
+    "run_continuation.py": "a1dd2350a72cfebdb3df3e56daa0ca1269a581b212aae1fa9f906c8c6107902c",
+    "test_continuation.py": "2e5b60cafe06da5b6288c3a1346d5b633ddaac0efb0790856871f5d88f9a51be",
+    "audit_v5_recovery.py": "ae0de113d8e62b7ffb529426042336cf76ac236058a17e94887de7ee29c0d972",
+    "test_audit_v5_recovery.py": "dd6b6a90f34af2490150497716eccbb9a5e038292eeba849ba264992f1495751",
+    "recovery_appendix.md": "88b722d3eba9cb58336176058f5ae13aac4bdc92a9896067236b3c7a00a36bb9",
+    "post_503_diagnostic.json": "e4e048f06dca8eb66a4992404c87ecaeef1494634752459b3de2eb76c521c836"
+  },
+  "export_note": "Historical pins refer to original bytes. Only exported replay inputs are verified against the original-byte provenance map; live runners and ancillary files are not included."
+}

@@ -1,0 +1,259 @@
+{
+  "status": "English metadata derivative; not a new experiment",
+  "original_numeric_artifact_sha256": "d814dff1a41e87a2eba67e50f315cbc8c873e61e90ae74d446563fcd781dadf9",
+  "files": {
+    "experiments/data/literature_snapshots/sources_A.json": {
+      "original_sha256": "840aa9622d545060d33d9cd546d18c730da4f7149cd89dca4f0359ac5e0dc698",
+      "export_sha256": "840aa9622d545060d33d9cd546d18c730da4f7149cd89dca4f0359ac5e0dc698",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/sources_B.json": {
+      "original_sha256": "d443e8ca4ab40b081176c2764c2c931d456ed4d5cb944960af5a71f422fcd63b",
+      "export_sha256": "e9b2ef748e8729870bb53427722846afa17b907c3037ef9eeb7e0b90f3382f8e",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v4_authority/cases.json": {
+      "original_sha256": "7ec66829f6f7388f65c558a98b8c9fc19ec7c70e108a9d04a864fe73c9e2de96",
+      "export_sha256": "ff9705e14f6de002a54a39df1e2c47b941f3737e136c6098106a4abfe946a7b6",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v4_authority/frozen_protocol.json": {
+      "original_sha256": "925da8713bf9d440df73bdd544a3a89c1921a54dff4f5bba4027280301ae0515",
+      "export_sha256": "e1f810946d9c22bb496067d69730dfcdc48c81de8171d613e8b9010f57c96969",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v4_authority/runs/9132b46ea24c/gpt-6-luna/events.jsonl": {
+      "original_sha256": "bb223d181d3718eda1b1eccfbfd9efbc6da77e404401c43d7121821c8ba25905",
+      "export_sha256": "e2ac9b6803d4594726968e7ac71c0e234f68fa074c98c9a7f0120280a374b6b4",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v4_authority/runs/9132b46ea24c/gpt-6.1-sol/events.jsonl": {
+      "original_sha256": "47800d247776fa569e2a7f23fb38bf1046532d3b8e38d4e90ace84417fc78260",
+      "export_sha256": "4fe7f99f288bbd51835c2384ddf3e38e67fd9c19c2f3b790d870102accbddd7a",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v3_ablation/cases.json": {
+      "original_sha256": "83875e2b5ef24142e47909d2d68b961f0ec2db915d95cbee5ff19eca190f757d",
+      "export_sha256": "1337c23ab59d5982c0959b3c5e0dc57b92a6f772b8e19268df5198b6352ca264",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v3_ablation/frozen_protocol.json": {
+      "original_sha256": "7fc96179b816d64847eb3d4c87554975612bad90b885b071b5b9a720789db639",
+      "export_sha256": "1ac663137fc2e22c3aa14279ca9bcc19bc79ad59ab693092a955a1c9d22450e1",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v3_ablation/runs/750a0dd56c6e/events.jsonl": {
+      "original_sha256": "9d3def66536a9970e35d568a926a29acb7f4a22de8b3a47c0e8becfa36d99efb",
+      "export_sha256": "2b66cab97ce1a6696c1c68e70232472ab8d73be4814c2b1aed27e7ed830b4e1c",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v3_ablation/sources.json": {
+      "original_sha256": "4e55a24dd99d8637f1512cf02c841d48f35285039e6291f2bb8014b07fa8d1b6",
+      "export_sha256": "4e55a24dd99d8637f1512cf02c841d48f35285039e6291f2bb8014b07fa8d1b6",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/cases.json": {
+      "original_sha256": "dfdc86e2728ca74a826a176b393b0810a117aca05ffe423444f0facb32e5e7c7",
+      "export_sha256": "a85e22e799ccdef7dfb48a94093fbd003bc1975632da3f857f339400f3c1fa9d",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v5_evaluation/frozen_protocol.json": {
+      "original_sha256": "d2bfac5ae17965d3faead541fdf23693e4b8d77b20bbda5eefaae2755cfc89b3",
+      "export_sha256": "7bd8754b12e6e1adc75f217f85865dc544eb78bc468bd59aecee944872c1c1a2",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v5_evaluation/recovery_protocol.json": {
+      "original_sha256": "4ccfc2bd2fd4e244b6ca4b5f9f3927dcf933e6115fcf0c82efd11c89a2f27ef7",
+      "export_sha256": "f06e161b4d93cfcf39594e48e1318546dcc56966a1b5bdc0880253ec01528e68",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v5_evaluation/recovery_runs/b30de93528cf/gpt-6-luna/events.jsonl": {
+      "original_sha256": "72b65a530b48fbcd75287bead95eeea283f96b92fb226b8f008229d33f50af7f",
+      "export_sha256": "ccae539886dca7bdcc7c0bcd9256a75b2ba6fb2a9bfb700ebf7c2d5708f8261d",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/recovery_runs/b30de93528cf/gpt-6.1-sol/events.jsonl": {
+      "original_sha256": "61472c2e4fc974c3294a20d2b6bc4218af4bf2bc304e1ea39b52ba733dbfe735",
+      "export_sha256": "be604d050a33d69700f3c1b95203bc5d735373c580e7698b64c317d55b5e180d",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/runs/ad8590f56fbb/gpt-6-luna/events.jsonl": {
+      "original_sha256": "8e2a93b83ac95953e75622ceed5111449f889a638f623e42cb860671936d108f",
+      "export_sha256": "f761f7fffcb15cedba40abfbd7b2beff0c3447e680cf9be61700deef9f46bbc0",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/runs/ad8590f56fbb/gpt-6.1-sol/events.jsonl": {
+      "original_sha256": "4fc3d35afa40007cc40bab9a8b2d292e41255fef9d13bb0592df1d5ef7ff96d7",
+      "export_sha256": "7344ec746af0cdcf9cdaf3a6571ece6d3ab5f05481d0e365022d902b2d92cb67",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v2_pilot/frozen_protocol.json": {
+      "original_sha256": "4f5990b832c8360d395e7e4741bf0683d43e58f13143ba9d4275ccb66205acaa",
+      "export_sha256": "0e118441041c9766f5430f67bd5c5bc67c735eef47c02cd5f18a9e1a8b44655d",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v2_pilot/runs/73ca810c4f1a/episodes.jsonl": {
+      "original_sha256": "ecebb604b69a08bb81d8110f7883215da15a4ae2ea6d5c1f434edcda18dab562",
+      "export_sha256": "1734bbada94deec7f5b54a27ea890a735758ff5606d01b56374934c98b952540",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v2_pilot/runs/75a82787f331/episodes.jsonl": {
+      "original_sha256": "f8e20ef499a903109b2ab692890f9ad1914eb59ce330e4ef51c7be18617ff189",
+      "export_sha256": "1a5077103cf5fd3f0816c416c4ac61c65cc4d428f715ad6eff79c7ec85977c71",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v2_pilot/runs/7bf8c7f17bd9/episodes.jsonl": {
+      "original_sha256": "8f54a4f317ad9f7fd2e5618fa5ce40818057cdee3c406bd1572718d94841b980",
+      "export_sha256": "62aaa4e47bf7e9d552b36d72cf6edad3969e748ee7ce07a5a29796b9ae83cab8",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/continuation/runs/9af4670b2005/delivery_numbers.json": {
+      "original_sha256": "1aa16046b34a31050df9541826d7ee61f02866da7ff40e57db0fa97ffe2ec7a3",
+      "export_sha256": "05457b4bf44af4b296dbb699540bc029633843325ca316a723e6c9537ee5776e",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/v5_evaluation/continuation/runs/9af4670b2005/gpt-6-luna/events.jsonl": {
+      "original_sha256": "49b5a4df5f2ae600de5ce066cbe8bbe484c7897a8a3d411f2a3d21a289c069c9",
+      "export_sha256": "208c1803338329e16f864ef3ad3d1995337a670a662c8b9a30075379217c047a",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/continuation/runs/9af4670b2005/gpt-6.1-sol/events.jsonl": {
+      "original_sha256": "10d1bb63720dfd3e75d2677d303a6a24e75fc973d5b9210749f2075283542635",
+      "export_sha256": "eb6d40a8eadab58cc6847ddff5997a2931326f3e1c0401ce1f2710a629ea6bd6",
+      "byte_identical": false,
+      "transformation": "None"
+    },
+    "experiments/data/v5_evaluation/continuation/stage_protocol.json": {
+      "original_sha256": "495b91cc0f80de0cdb780d7f9d9ab909160fef61b03a614e4ba3f639a096066c",
+      "export_sha256": "385f9aac87e12eddff7f8cb4e65b7d07c0920e96765a118caac44c94eead6143",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/literature_snapshots/agentdojo_html_cached.txt": {
+      "original_sha256": "1eee16e9b1fae7fe1e856af2e91cbdb9b70679abdc6dbc46080ef8e526a4a45d",
+      "export_sha256": "1eee16e9b1fae7fe1e856af2e91cbdb9b70679abdc6dbc46080ef8e526a4a45d",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/agentdojo_pdf_cached.txt": {
+      "original_sha256": "bc6ddba2f0c5a56ca3ece985508f48f565a95e1430fa7862b8d2224a228db19c",
+      "export_sha256": "bc6ddba2f0c5a56ca3ece985508f48f565a95e1430fa7862b8d2224a228db19c",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/camel_v2.txt": {
+      "original_sha256": "5749e55546a8a5159491adeaa9c65f23c11b274ff32b885ab78b085fd50ab6cd",
+      "export_sha256": "5749e55546a8a5159491adeaa9c65f23c11b274ff32b885ab78b085fd50ab6cd",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/firewalls_v2.txt": {
+      "original_sha256": "37ac4d6598e845817aee8b64398a7521a255abd556a38c5422e441d99a9ca9ca",
+      "export_sha256": "37ac4d6598e845817aee8b64398a7521a255abd556a38c5422e441d99a9ca9ca",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/greshake_v2.txt": {
+      "original_sha256": "236ddc8bfaf08c35c34aaa4eea738925effe05e35fb925bc54f110c45dd2863a",
+      "export_sha256": "236ddc8bfaf08c35c34aaa4eea738925effe05e35fb925bc54f110c45dd2863a",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/injecagent_metadata.txt": {
+      "original_sha256": "dd338a767fd749ea4ef18b4c89e55eaf602ce2530836cfce5f939bdafc5d56eb",
+      "export_sha256": "dd338a767fd749ea4ef18b4c89e55eaf602ce2530836cfce5f939bdafc5d56eb",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/instruction_hierarchy_v1.txt": {
+      "original_sha256": "507d92af18c2919d73a8e2d3845db65518c2b5f812f38100e8ef77f10a3d81df",
+      "export_sha256": "507d92af18c2919d73a8e2d3845db65518c2b5f812f38100e8ef77f10a3d81df",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/melon.txt": {
+      "original_sha256": "70e1b10b4fe96a7e7e0146fa18cd4b3d7c932f20e0a469a7e6cd5494a2bc11a3",
+      "export_sha256": "70e1b10b4fe96a7e7e0146fa18cd4b3d7c932f20e0a469a7e6cd5494a2bc11a3",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/literature_snapshots/spotlighting.txt": {
+      "original_sha256": "adfa5d5fda3b55ef4541a59930928404ec542c8088cfefee3b4fe520fb427ea2",
+      "export_sha256": "adfa5d5fda3b55ef4541a59930928404ec542c8088cfefee3b4fe520fb427ea2",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/repro_2026_10_30/freeze_manifest.json": {
+      "original_sha256": "b4c02964c77670d203d81277ab0e79bd3228ebc5c965599f58ba0d0e295dcc90",
+      "export_sha256": "55e4023f3977b8dd4f96279a01f9ac7501ae702b3871e27973300c94ccb66178",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/repro_2026_10_30/frozen/case.json": {
+      "original_sha256": "776b61cecf54e52b1e952eee2172f0d69e1a081384582c897e3d255bc7b30fd8",
+      "export_sha256": "891092c864aaf88852736ffd69a408545e871096ebfc99aa1e33c3adb8994bab",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/repro_2026_10_30/frozen/input_A.json": {
+      "original_sha256": "e2b74e406670728ec485b8a5ce07f993ed7c95d429e8823457552d130cf56117",
+      "export_sha256": "e2b74e406670728ec485b8a5ce07f993ed7c95d429e8823457552d130cf56117",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/repro_2026_10_30/frozen/input_B.json": {
+      "original_sha256": "7d434bb04ff2c598757eceebcfcded72cab7f815451148443016f34c82e9bfb3",
+      "export_sha256": "7d434bb04ff2c598757eceebcfcded72cab7f815451148443016f34c82e9bfb3",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/repro_2026_10_30/frozen/order.json": {
+      "original_sha256": "740ce5c37f9fdb10c88e03a792cb9444af2fe99f630b5a4714f40c4158a99cd8",
+      "export_sha256": "740ce5c37f9fdb10c88e03a792cb9444af2fe99f630b5a4714f40c4158a99cd8",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/repro_2026_10_30/results_final.json": {
+      "original_sha256": "d0ee267095f97dba2d94fb252c6241f321639afe33cce8aed83ca74917209f4d",
+      "export_sha256": "676fec51e765579ff36e66737ca5be9c773469b85b6b3638f14f5b9aa0aa5224",
+      "byte_identical": false,
+      "transformation": "English metadata translation and portable path normalization; event payloads and order unchanged"
+    },
+    "experiments/data/repro_2026_10_30/run/events.jsonl": {
+      "original_sha256": "f0642673dbcab22e981e758ac66ac06d908e64d5bfd21bdbb7ead4c96d684556",
+      "export_sha256": "f0642673dbcab22e981e758ac66ac06d908e64d5bfd21bdbb7ead4c96d684556",
+      "byte_identical": true,
+      "transformation": "None"
+    },
+    "experiments/data/reference_extracts/rag_agent_reference.py": {
+      "original_sha256": "a688e5d0e3398699e80e004bcfae07bda3faaba9441572236623a4daf92a403e",
+      "export_sha256": "b0ca8805d8b2caa267584fad58deb39149151100ba19ed7188ea7347c892dcbb",
+      "byte_identical": false,
+      "transformation": "Static shipping_day and protected-output interface only; omitted personal-email CLI and irrelevant synthetic-secret demonstration"
+    }
+  },
+  "protocol_scope": "Exported replay dependencies only. Original runner/source-code freeze dependencies are listed but not distributed or claimed reverified here."
+}

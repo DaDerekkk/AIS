@@ -1,0 +1,9 @@
+{
+  "files": {
+    "frozen/case.json": "776b61cecf54e52b1e952eee2172f0d69e1a081384582c897e3d255bc7b30fd8",
+    "frozen/input_A.json": "e2b74e406670728ec485b8a5ce07f993ed7c95d429e8823457552d130cf56117",
+    "frozen/input_B.json": "7d434bb04ff2c598757eceebcfcded72cab7f815451148443016f34c82e9bfb3",
+    "frozen/order.json": "740ce5c37f9fdb10c88e03a792cb9444af2fe99f630b5a4714f40c4158a99cd8"
+  },
+  "export_note": "Historical pins refer to original bytes. Only exported replay inputs are verified against the original-byte provenance map; live runners and ancillary files are not included."
+}

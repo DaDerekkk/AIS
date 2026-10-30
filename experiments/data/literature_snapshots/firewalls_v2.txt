@@ -1,0 +1,448 @@
+Title: Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?
+
+URL Source: https://arxiv.org/html/2510.05244v2
+
+Published Time: Mon, 24 Aug 2026 22:20:35 GMT
+
+Markdown Content:
+1]ServiceNow 2]Mila 3]Université de Montréal 4]University of Guelph 5]Vector Institute \contribution[*]Equal contribution \contribution[†]Equal supervision \projectpage[https://firewall-defenses.github.io](https://firewall-defenses.github.io/)\correspondence
+
+Kevin Kasa   
+Abhay Puri Gabriel Huang Irina Rish Graham W. Taylor   
+Krishnamurthy Dj Dvijotham Alexandre Lacoste Affiliation: [ Affiliation: [ Affiliation: [ Affiliation: [ Affiliation: [ Email: [rishika.bhagwatkar@mila.quebec](mailto:rishika.bhagwatkar@mila.quebec)
+
+###### Abstract
+
+AI agents are vulnerable to indirect prompt injection attacks, where malicious instructions embedded in external content or tool outputs cause unintended or harmful behavior. Inspired by the well-established concept of firewalls, we show that a simple, modular, and model-agnostic defense operating at the agent–tool interface achieves perfect security with high utility across all four public benchmarks: AgentDojo, Agent Security Bench, InjecAgent and \tau-Bench, while achieving a state-of-the-art security-utility tradeoff compared to prior results. Specifically, we employ two firewalls: a Tool-Input Firewall (Minimizer) and a Tool-Output Firewall (Sanitizer). Unlike prior complex approaches, this defense makes minimal assumptions about the agent and can be deployed out of the box. This makes it highly generalizable while maintaining strong performance without compromising utility. Our analysis also reveals critical limitations in these existing benchmarks, including flawed success metrics, implementation bugs, and most importantly, weak attacks, hindering progress. To address this, we present targeted fixes to these issues for AgentDojo and Agent Security Bench, and propose best practices for more robust benchmark design. Moreover, we introduce a three-stage attack strategy that cascades standard prompt injection attacks, second-order attacks, and adaptive attacks to evaluate the robustness beyond existing attacks. Overall, our work shows that existing agentic security benchmarks are easily saturated by a simple approach and highlights the need for stronger benchmarks with carefully chosen evaluation metrics and strong adaptive attacks.
+
+## 1 Introduction
+
+LLMs are increasingly deployed as tool-calling agents that can browse the web, operate databases, and invoke external APIs (anthropic2024claude35; llama2024modelcards; openai2024functioncalling; yang2025qwen3; bahdanau2024tapeagents). This capability unlocks powerful applications like booking travel and paying bills but also expands the attack manifold. These agents are susceptible to malicious adversaries that can embed hidden instructions in seemingly benign external content (e.g., a web page, calendar entry, email, or database field), known as indirect prompt injection (IPI) attacks (zhang2025agentASB; debenedetti2024agentdojo; ruan2024identifying; liu2024formalizing; zhan-etal-2024-injecagent). When the agent reads this content, it may follow the attacker’s instructions rather than the user’s intent and can leak private information or carry out malicious actions. Hence, securing such systems is crucial, since even a single successful injection can cause real-world harm.
+
+Existing defenses for IPI attacks largely rely on LLM retraining (wallace2024instruction; chen2025struq), LLM-based detectors (protectai_deberta_prompt_injection_2024), prompt-augmentation defenses (sandwich_defense_2023; hines2024defending) or system-level policies (Debenedetti2025CaMeL). Drawing from recent defenses inspired by the well-established concept of cybersecurity firewalls (BagdasarianAirGapAgent; abdelnabi2025firewalls), we investigate two complementary and lightweight LLM firewalls placed at the agent–tool boundary: a Tool-Input Firewall (Minimizer) and a Tool-Output Firewall (Sanitizer). The Minimizer mitigates data stealing attacks by minimizing any unnecessary data or private information from tool call arguments. The Sanitizer filters tool responses before they are fed back into the agent, removing suspicious instructions and potentially malicious content. Our experiments demonstrate that this simple “minimize & sanitize” defense that requires no LLM retraining or proprietary guardrails can achieve \sim 0% attack success with minimal utility degradation across four widely used benchmarks.
+
+![Image 1: Refer to caption](https://arxiv.org/html/2510.05244v2/defense.drawio_v4.png)
+
+Figure 1: Minimize & Sanitize tool-calling pipeline. The user (trusted) gives a task to the AI agent. The agent generates tool calls, which are passed through the Minimizer to strip any information that is not required or relevant for the given user task. After executing these “minimized" tool calls, the output is finally passed through the Sanitizer to remove all suspected prompt injection content, before returning the result to the agent.
+
+Benchmarking is critical for understanding and comparing the security of tool-calling agents. As attacks evolve and defenses adapt, researchers need consistent, realistic, and reproducible evaluation frameworks to identify true progress and avoid misleading conclusions. Several recent benchmarks, such as AgentDojo (debenedetti2024agentdojo), Agent Security Bench (zhang2025agentASB), and InjecAgent (zhan-etal-2024-injecagent), aim to simulate real-world attack scenarios. However, our analysis reveals that many benchmarks do not model real-world situations appropriately and sometimes employ skewed metrics to gauge performance. In such cases, even weak defenses may seem deceptively effective. We highlight these limitations and fix them through our proposed standardized benchmarking best practices.
+
+Beyond targeted fixes for the existing benchmarks, we propose a much stronger attack strategy. We propose a three-stage cascaded attack strategy that escalates only when earlier attempts fail. The attacks progress from existing formatted injections to second-order semantic deception templates and finally utilize a defense-aware adaptive LLM mutator that iteratively refines attacks using feedback.
+
+Our main contributions and findings are as follows:
+
+*   •
+We investigate a simple, effective, modular and model-agnostic defense for tool-calling agents based on two firewalls placed at the LLM–tool boundary: a Tool-Input Firewall (Minimizer) and a Tool-Output Firewall (Sanitizer). Together, they implement a “minimize & sanitize” principle to block IPI attacks without requiring any retraining and can be seamlessly integrated into any existing pipeline (Figure [1](https://arxiv.org/html/2510.05244v2#S1.F1 "Figure 1 ‣ 1 Introduction ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")).
+
+*   •
+We demonstrate that this approach achieves the best security–utility tradeoff on all four public benchmarks: AgentDojo, Agent Security Bench, InjecAgent and \tau-bench. This highlights the generalizability of our approach without any performance degradation.
+
+*   •
+We identify key flaws in widely popular benchmarks (AgentDojo, Agent Security Bench, InjecAgent), propose targeted fixes, and release their corrected versions along with updated baseline results to enable more faithful and reliable evaluation.
+
+*   •
+We introduce a much stronger, three-stage cascade attack strategy that escalates from existing formatted injections, to second-order semantic deception templates, and finally to a defense-aware adaptive LLM mutator. This protocol surfaces failure modes missed by static benchmark attacks and provides a stronger, more realistic robustness evaluation.
+
+## 2 Related Works
+
+Recent efforts to improve agent security have focused on various ways of isolating one (or several) tool-calling LLMs, including execution isolation (Wu2025IsolateGPT; shi2025progent), restricted interpreters (Debenedetti2025CaMeL), and privilege-based information control (wu2024system; kim2025prompt). These “system-level” security methods often rely on a dual-LLM approach, leveraging quarantined agents with restricted actions that interface with untrusted sources, and a privileged agent that can interact with trusted users. While effective in preventing injection attacks, these approaches often incur a heavy implementation burden, such as in the case of CaMeL (Debenedetti2025CaMeL), which relies on a custom Python interpreter that constrains agents based on domain-specific policies. Further, increased security by CaMeL is also accompanied by reduced task success rates, an undesirable consequence.
+
+Relatedly, BagdasarianAirGapAgent relies on an isolated LLM to perform context minimization for a secondary conversational LLM. abdelnabi2025firewalls extend this approach to multi-turn conversations, and introduce the use of “firewalled” agents. This involves orchestrating three policy-adhering LLM agents: an input firewall that sanitizes data input to the primary agent into a task-specific schema, a data firewall that minimizes user data, and a trajectory firewall that inspects intermediate agent steps. Our work simplifies this approach and demonstrates that a single output firewall is able to reliably prevent essentially all injection attacks across four agentic benchmark suites, without requiring task-specific policies or guidelines.
+
+Additional injection defenses include repeating user prompts (sandwich_defense_2023), delimiting tool outputs with special characters (hines2024defending), filtering tools (debenedetti2024agentdojo), employing additional models to detect prompt injections (protectai_deberta_prompt_injection_2024; liu2025datasentinel; jacob2025promptshield), or trajectory re-execution (zhu2025melon). Our results demonstrate that these approaches are either ineffective at preventing attacks or do so at significant costs to task utility. Additionally, PromptArmor (shi2025promptarmorsimpleeffectiveprompt) utilizes an LLM to detect the injections and then remove the detected injections within tool calls using fuzzy logic. However, they employ distinct system messages for different benchmarks, which limits their generalizability. Another set of approaches, which rely on (re)training LLMs for improved robustness to attacks (wallace2024instruction; chen2025struq; chen2025secalign) require considerable resources and may not be compatible with black-box models. Thus, we do not ablate these methods, but consider them part of a complementary line of research.
+
+Numerous benchmarks and evaluation suites have been developed to assess performance on defending against injection attacks (debenedetti2024agentdojo; zhan-etal-2024-injecagent; zhang2025agentASB). While these capture different facets of agent security, we highlight numerous shortcomings and areas for improvement. This includes implementation issues, bugs, design choices, and insufficient evaluation metrics. We also show that our relatively simple firewall defense is able to effectively eliminate attacks across all benchmarks with zero tuning, thus emphasizing the need for newer and more challenging security benchmarks. To this end, we also propose a stronger three-stage cascade attack strategy.
+
+## 3 Method
+
+Task Setup.  We assess the security risks posed by IPI attacks on LLM-based tool-calling agents tasked with multi-step user requests. In addition to the user task, the agent has access to a suite of tools for interacting with an environment (e.g., querying databases). To complete the user task, the agent may need to invoke multiple tools, provide each tool with the correct input arguments 1 1 1 This can also be \emptyset, i.e., no arguments are needed, and then use the resulting observations either to subsequent tool calls or return the final answer to the user.
+
+Threat Model.  We consider attacks where adversaries may inject manipulative instructions or malicious content into the tool observations returned to the agent, intending to coerce the agent into executing an attacker-chosen objective. Injections may be appended to the tool response and exploit the agent’s reliance on untrusted content that can appear benign yet include hidden imperatives (e.g., “ignore previous instructions"). Such attacks can originate from various sources in the environment, such as a tool querying a compromised database, reading a malicious email, or calling unsafe third-party APIs. They may seek to accomplish various harmful actions, such as exfiltrating sensitive data or making fraudulent purchases. We focus on IPI attacks where the user is assumed benign and provides a safe and legitimate task. Finally, we assume no a priori knowledge of which tools are compromised or whether an injection is present, and therefore treat every tool output as potentially adversarial.
+
+Defense Objective.  A defense should neutralize malicious tool outputs to prevent completion of the attacker’s objective, while preserving successful completion of the benign user task. Importantly, these objectives should remain aligned, and efforts to mitigate attack success rates (ASR) should not come at the cost of reduced utility, which would render the agent impractical in real-world deployment. In predominantly secure environments, IPI defenses should allow agents to exhibit strong benign utility (BU) (i.e. , utility in the absence of attacks). In untrusted environments (e.g., the open Web), defenses should still enable strong utility under attack (UA).
+
+Firewall Defenses.  We introduce a Tool-Input Firewall (Minimizer) F_{I}, which removes unnecessary confidential information from tool input arguments before a tool is invoked. To decide what to retain, F_{I} is provided the trusted user task, the tool description, and the original tool arguments (full prompt in Appendix [B](https://arxiv.org/html/2510.05244v2#A2 "Appendix B Minimizer and Sanitizer Prompts ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")), since some workflows legitimately require private information. With F_{I} in place, only the filtered arguments are passed to the tool.
+
+We also introduce a Tool-Output Firewall (Sanitizer) F_{O}, which sanitizes each returned tool observation to remove potentially malicious content. This firewall is provided with the original trusted user task (full prompt in Appendix [B](https://arxiv.org/html/2510.05244v2#A2 "Appendix B Minimizer and Sanitizer Prompts ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). To mitigate injection attacks, every tool response is first passed through F_{O}, and only the sanitized content is forwarded to the primary LLM agent.
+
+Unlike other guardrail approaches that merely flag suspected injections, this Minimizer-Sanitizer defense acts as a limited-privilege LLM that can selectively filter malicious content. We summarize the overall procedure in Algorithm [1](https://arxiv.org/html/2510.05244v2#alg1 "Algorithm 1 ‣ 3 Method ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+Algorithm 1 Input & Output Firewalls Pipeline
+
+0: User task U, LLM Agent \mathcal{A}, Tool-Input Firewall F_{I}, Tool-Output Firewall F_{O}, Tools \mathcal{T}
+
+0: Injection attacks do not succeed
+
+1:Input: User provides trusted task U to agent \mathcal{A}
+
+2: Initialize: task\_complete\leftarrow\text{False}
+
+3:repeat
+
+4: Agent \mathcal{A} generates tool call with input args: T(I_{T})
+
+5:// Minimize Phase - Filter sensitive information
+
+6: Filtered arguments: I_{T}^{\prime}\leftarrow F_{I}(I_{T},U,T_{desc})
+
+7:// Tool Execution
+
+8: Execute tool with filtered inputs: O_{T}\leftarrow T(I_{T}^{\prime})
+
+9:// Sanitize Phase - Remove malicious content
+
+10: Sanitized output: O_{T}^{\prime}\leftarrow F_{O}(O_{T},U,I_{T}^{\prime})
+
+11:// Response Generation
+
+12: Return O_{T}^{\prime} to agent \mathcal{A}
+
+13:task\_complete\leftarrow\mathcal{A}.\text{isTaskComplete}(U,O_{T}^{\prime})
+
+14:until\mathcal{A} determines task\_complete=\text{True}
+
+15:Output: Agent provides final response to user
+
+## 4 Experiments
+
+### 4.1 Setup
+
+We evaluate the effectiveness of our proposed input and output firewalls against IPI attacks using four publicly available benchmarks: AgentDojo (debenedetti2024agentdojo), Agent Security Bench (zhang2025agentASB), InjecAgent (zhan-etal-2024-injecagent) and Tau-Bench (yao2025taubench). The prompts for the tool input and tool output firewalls are given in [Appendix B](https://arxiv.org/html/2510.05244v2#A2 "Appendix B Minimizer and Sanitizer Prompts ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+(1) AgentDojo: AgentDojo (debenedetti2024agentdojo) is a widely adopted benchmark for evaluating security in tool-augmented agents. It comprises four task suites: banking, slack, travel, and workspace, spanning a total of 949 security evaluations. The benchmark supports four baseline defenses: spotlighting, repeat-user-prompt and prompt injection detector (PI-detector). We evaluate using the important_instruction attack.
+
+(2) Agent Security Bench (ASB): It is a recent benchmark designed to test agent robustness in a minimum two-stage tool-use setting. Each user task is decomposed into two sub-tasks by the agent, which also selects a subset of tools for each sub-task. ASB includes 400 security evaluations and supports three baseline defenses: delimiters defense, instructional prevention, and sandwich defense. We report results under the Combined attack, which composes all ASB attack types–naive, escape-character, fake completion, and context-ignoring–into a single prompt zhang2025agentASB.
+
+(3) InjecAgent: We also evaluate on InjecAgent (zhan-etal-2024-injecagent), which targets IPI attacks originating from malicious tools. Attacks are designed to cause either direct harm (DH) to the user or data stealing (DS) of private information. The benchmark consists of simulated (pre-determined) tool calls containing either basic or enhanced injection attacks. As all tool calls are static, InjecAgent does not support utility evaluation.
+
+(4) Tau-bench:\tau-bench suite (yao2025taubench) is a benchmark designed to evaluate tool-use agents on dynamic conversational tasks. As \tau-bench is designed primarily for utility evaluation, we augment it with data-stealing attacks using the DoomArena framework (boisvert2025doomarena). Since \tau-bench is primarily designed to assess agentic performance on real-world domains, it is well suited for studying utility–security trade-offs under challenging tasks.
+
+### 4.2 Evaluation Metrics
+
+We evaluate three metrics:
+
+*   •
+Benign Utility (BU): Fraction of user tasks solved in the absence of attacks.
+
+*   •
+Utility under Attack (UA): Fraction of user tasks solved when injection content is present.
+
+*   •
+Attack Success Rate (ASR): Fraction of tasks under attack in which the agent follows injected instructions or triggers unsafe behavior. Safe refusal or ignoring the injection counts as ASR =0.
+
+## 5 Results
+
+We are interested in two key tradeoffs. (a) ASR vs BU: It is important for a defense to not be over-strict and reduce the utility even in the absence of an attack. An ideal defense should maintain the original BU of the agent. (b) ASR vs UA: It highlights how effective a defense is against attacks and whether it impacts utility under attack. An ideal defense should have 0 ASR while maintaining UA the same as BU.
+
+Table 1: AgentDojo: Performance of different defenses using GPT-4o. We compare various defenses in terms of Benign Utility (BU), Utility under Attack (UA) and Attack Success Rate (ASR). Lower ASR and higher utility are desired. Our proposed defense Sanitizer achieves the best ASR-BU and ASR-UA Tradeoff. Note: Defenses marked with * are non-replicable baselines.
+
+##### AgentDojo.
+
+We compare three firewall defenses: Minimizer, Sanitizer, and Combined, against prior methods including Melon, PromptArmor and CaMeL. 2 2 2 Since we were unable to completely reproduce their results, we report their published results in such cases. From [Table 1](https://arxiv.org/html/2510.05244v2#S5.T1 "In 5 Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), we see that the Minimizer significantly reduces ASR. Upon qualitatively analyzing the results, we notice that it mainly helps in cases where the attacker attempts to exfiltrate PII information or other extraneous data not essential to the user task. However, since it aggressively redacts input arguments, it can also remove information that is important for task success, leading to a drop in utility. In contrast, the Sanitizer alone is highly effective, achieving 0 ASR across all models while preserving high utility. When both defenses are applied together (combined), the ASR remains 0, but the utility is slightly lower than with the Sanitizer alone due to the Minimizer’s redactions. Compared to the system-level defense baseline (CaMeL), our Sanitizer alone achieves the same ASR (negligible difference) while maintaining much higher utility (BU and UA), demonstrating its strength as a robust defense. Detailed results across different suites and more models are shown in [Appendix C](https://arxiv.org/html/2510.05244v2#A3 "Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), Tables [10](https://arxiv.org/html/2510.05244v2#A3.T10 "Table 10 ‣ C.1 AgentDojo ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") to [12](https://arxiv.org/html/2510.05244v2#A3.T12 "Table 12 ‣ C.1 AgentDojo ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+##### Agent Security Bench.
+
+In ASB, since there are no input arguments to the tools, we only use the Sanitizer. The Sanitizer achieves the lowest ASR among all compared defenses while maintaining competitive UA (see [Table 2](https://arxiv.org/html/2510.05244v2#S5.T2 "In Agent Security Bench. ‣ 5 Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). The residual non-zero ASR is because several attack-tools perform truly benign operations or return benign-looking outputs, so the Sanitizer (by design) does not flag them, yet ASB counts any invocation of these tools as an attack success. Although there is a slight drop in BU when using the Sanitizer, it is optimally traded off by the substantial gain in security, with the Sanitizer having almost a 4\times lower ASR. Please refer detailed results in [Appendix C](https://arxiv.org/html/2510.05244v2#A3 "Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), Tables [13](https://arxiv.org/html/2510.05244v2#A3.T13 "Table 13 ‣ C.2 Agent Security Bench ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") to [15](https://arxiv.org/html/2510.05244v2#A3.T15 "Table 15 ‣ C.2 Agent Security Bench ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+Table 2: Agent Security Bench: Performance of different defenses using GPT-4o. We compare various defenses in terms of Benign Utility (BU), Utility under Attack (UA) and Attack Success Rate (ASR). Lower ASR and higher utility are desired. The Sanitizer defense achieves the best ASR-BU and ASR-UA tradeoffs.
+
+##### InjecAgent.
+
+Table 3: InjecAgent: GPT-4o results with base and enhanced attacks. Lower ASR is desired. Sanitizer achieves the lowest ASR.
+
+InjecAgent also does not provide inputs to tools, and hence, we only use the Sanitizer. Our experiments are summarized in Table [3](https://arxiv.org/html/2510.05244v2#S5.T3 "Table 3 ‣ InjecAgent. ‣ 5 Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), and demonstrate that the Sanitizer is able to significantly reduce or eliminate prompt injection attacks across all the attack settings. Surprisingly, their enhanced attacks are less effective, as they likely appear overly malicious. We note that while the PI Detector also reduces injection attacks. Although the lack of a utility metric in InjecAgent makes it impossible to determine if this is at the cost of reduced task success, experiments on other benchmarks, like AgentDojo, suggest that PI Detectors tend to reduce utility. Detailed results are given in Appendix [C.3](https://arxiv.org/html/2510.05244v2#A3.SS3 "C.3 InjecAgent ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), where we also discuss the presence of ambiguous, seemingly benign attacks.
+
+##### Tau-Bench.
+
+Table 4: \mathbf{\tau}-bench: Performance using GPT-4o. The Sanitizer is able to consistently eliminate prompt injection attacks (lower ASR is better). This increased security does not come at a cost of reduced utility (higher UA is better).
+
+Our results, summarized in [Table 4](https://arxiv.org/html/2510.05244v2#S5.T4 "In Tau-Bench. ‣ 5 Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), show that the Sanitizer alone is able to prevent all attacks and consistently achieve 0% ASR, while most other baselines do not. Importantly, we also observe that the Sanitizer does not lead to utility degradation. This is in contrast to PI Detection methods, which, although effective in preventing attacks, also lead to severe utility degradations. Finally, we highlight that numerous common IPI defenses are ineffective for this benchmark and have a negligible impact on ASR and utility. Since \tau-bench is originally intended to benchmark agentic performance in realistic and long-horizon tasks, this suggests that existing methods may be deficient in these settings, and are overcome by the Sanitizer.
+
+## 6 Analysis
+
+Generalization to other LLM Backbones.  We report results for Llama 3.3-70B (llama2024modelcards), Qwen3-8B, and Qwen3-32B (yang2025qwen3) on all four benchmarks (see [Table 10](https://arxiv.org/html/2510.05244v2#A3.T10 "In C.1 AgentDojo ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") to [20](https://arxiv.org/html/2510.05244v2#A3.T20 "Table 20 ‣ C.4 Tau Bench ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") in [Appendix C](https://arxiv.org/html/2510.05244v2#A3 "Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). Across these backbones, we observe the same trade-off: stronger models achieve higher absolute utility, but in all cases, the firewalls significantly reduce ASR while maintaining high benign and under attack utility. Note: It is important to note that the prompt to the Sanitizer is not tuned per model or benchmark, yet the defense remains effective, suggesting that it is not specific to an LLM or a particular benchmark. This demonstrates its robustness and generalizability to diverse attacks.
+
+Data Contamination.  As detailed in [Section H.1](https://arxiv.org/html/2510.05244v2#A8.SS1 "H.1 Data Contamination ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), benchmark releases postdate the models’ knowledge cut-off dates, ruling out data contamination. To further substantiate this, we use GPT-4o (cut-off: October 2023) as the primary agent and replace the Sanitizer with older models such as GPT-4-turbo (cut-off: April 2024) and Llama 3.3 70B (cut-off: December 2023) and evaluate on AgentDojo (released: June 2024) (Table [22](https://arxiv.org/html/2510.05244v2#A8.T22 "Table 22 ‣ H.2 Replacement of Sanitizer ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") in [Section H.2](https://arxiv.org/html/2510.05244v2#A8.SS2 "H.2 Replacement of Sanitizer ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). Across all Sanitizer variants, the ASR remains close to 0, showing that our defense continues to block unseen attacks. This indicates that the effectiveness of our method stems from a generalizable prompting structure rather than contamination. Please refer to [Section H.2](https://arxiv.org/html/2510.05244v2#A8.SS2 "H.2 Replacement of Sanitizer ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") for further details.
+
+Latency Analysis.  We evaluate the time required by different LLM backbones to complete the evaluation, both with and without attack (see [Table 23](https://arxiv.org/html/2510.05244v2#A8.T23 "In H.3 Latency Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). We compare our firewall defense with CaMeL, a state-of-the-art system-level defense on two suites (banking and Slack) of AgentDojo. CaMeL requires 8,417.25 seconds to solve the tool-knowledge attack runs, while our firewall needs only 3,347.93 seconds, achieving a 2.5\times speed-up (see [Table 24](https://arxiv.org/html/2510.05244v2#A8.T24 "In H.3 Latency Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). This demonstrates the efficiency of our approach. Additionally, our firewall defense achieves a competitive security-utility tradeoff, with significantly lower latency compared to other defenses. Please refer to [Section H.3](https://arxiv.org/html/2510.05244v2#A8.SS3 "H.3 Latency Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") for further details.
+
+Token Overhead Analysis.  We evaluate the token efficiency of different defenses on AgentDojo using GPT-4o as the backbone model. As shown in [Table 25](https://arxiv.org/html/2510.05244v2#A8.T25 "In H.4 Tokens Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), CaMeL incurs the highest token cost, requiring 2.82\times more input tokens and 2.73\times more output tokens than the baseline (no defense). In contrast, the Sanitizer defense significantly reduces token usage, requiring only 0.51\times the input tokens and 2.67\times the output tokens compared to the baseline, offering similar or better security with far lower prompt overhead as shown in the [Table 25](https://arxiv.org/html/2510.05244v2#A8.T25 "In H.4 Tokens Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"). For input tokens, Sanitizer reduces the mean from 13,463 to 2,036 (\approx 6.6\times fewer tokens), and the median from 3,643 to 1,030 (\approx 3.5\times reduction) as compared to CaMeL. Output token usage is comparable to CaMeL (mean 1,843 vs. 1,675), achieving strong security with much lower prompt overhead.
+
+False Positive and Negative Analysis.  We present the misclassification statistics (FNR, FPR, precision and accuracy) for the Sanitizer in [Table 26](https://arxiv.org/html/2510.05244v2#A8.T26 "In H.5 False Positive and Negative Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"). The Sanitizer demonstrates extremely reliable behavior, with a recall of 99.53%, meaning it misses only 0.47% of attacks, while maintaining 100% precision, indicating zero false positives. This near-perfect recall and absence of false positives support our claim that the Tool-Output Firewall is both effective and precise. These results highlight the strong reliability of the Sanitizer in distinguishing attacks from benign responses.
+
+Cases where Sanitizer degraded utility.  We conducted a qualitative investigation into the utility degradation under benign settings when using the Sanitizer. Across seeds, we identified only 9 specific user tasks where the BU dropped for at least 2 out of 3 seeds. The causes of utility failure were categorized as follows: (a)Agent mistake: the Sanitizer retained the necessary information, but the agent failed to complete the task successfully, unrelated to any Sanitizer behavior. (b)Sanitizer redaction: the Sanitizer filtered out content necessary for task completion, leading to a failure. Out of the 9 cases, 7 were due to agent mistakes, while only 2 were attributed to sanitizer redaction. This breakdown indicates that most of the BU degradation stems from agent variability, rather than overly aggressive redaction by the Sanitizer. Please refer to [Section H.6](https://arxiv.org/html/2510.05244v2#A8.SS6 "H.6 Qualitative Analysis ‣ Appendix H Additional Analysis ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") for examples of such cases.
+
+Uncertainty ablation. To probe _why_ the firewall succeeds, we measure whether prompt injections push the model into a different confidence regime. Concretely, we compute output uncertainty (token entropy over the top-5 token probabilities at each step) and perplexity for the Sanitizer’s (GPT-4o) outputs under clean versus injected tool outputs (across 3 seeds) on the Slack suite of AgentDojo. We find that both metrics remain essentially unchanged: entropy is 0.318\pm 0.001 (clean) versus 0.321\pm 0.001 (injected), and perplexity is 1.221\pm 0.002 (clean) versus 1.215\pm 0.002 (injected). The near-identical uncertainty scores indicate that injections do not induce abnormal confidence shifts or increased uncertainty. This is consistent with the fact that many existing injections are easily identifiable (e.g., via explicit formatting cues such as special tags). These uncertainty metrics, combined with our results on four benchmarks, demonstrate that the firewall not only performs effectively but operates with high confidence, making it reliable for real-world deployment.
+
+## 7 Assessment of Current Benchmarks
+
+While evaluating the firewall defense on already existing benchmarks, we systematically identified several critical limitations in them. Below, we summarize these limitations, propose targeted fixes and report detailed results on these revised benchmarks (detailed results in [Appendix C](https://arxiv.org/html/2510.05244v2#A3 "Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). Finally, we provide guidelines for future research.
+
+### 7.1 AgentDojo
+
+##### Issue 1: Injection vectors overwrite task-critical content.
+
+In several tasks, IPIs are implemented by _replacing_ environment content that is essential for completing the task (e.g., overwriting the items and payment amounts in a bill to be paid; see [Section D.1.1](https://arxiv.org/html/2510.05244v2#A4.SS1.SSS1 "D.1.1 Injection vectors overwrite task-critical content ‣ D.1 AgentDojo ‣ Appendix D Limitations of Current Benchmarks ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). This design makes the task unsolvable regardless of whether the agent disregards the malicious instruction. As a result, the observed utility drop primarily arises from data replacement rather than successful IPI influence. This confounds comparisons across defenses and often induces ceiling effects. Hence, for a faithful evaluation, IPIs should preserve task-critical signals, ensuring that measured failures are attributed to agentic failures rather than missing essential task information.
+
+Issue 2: Brittle utility metrics mis-score success. Another issue with AgentDojo arises from overly rigid utility evaluation metrics that fail to capture the semantic goal of the task. In particular, some metrics hinge on strict counters or exact state deltas, and thus incorrectly penalize cases where the task is successfully completed but additional (possibly attack-induced) events occur. For instance, in the Slack suite, the agent is asked to summarize an article and send it to a specific user (see [Section D.1.2](https://arxiv.org/html/2510.05244v2#A4.SS1.SSS2 "D.1.2 Brittle utility checks mis-score success ‣ D.1 AgentDojo ‣ Appendix D Limitations of Current Benchmarks ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). The utility function evaluates success by checking whether the target user’s inbox contains exactly one more message than before the task began. This strict cardinality check fails if the agent, due to either a valid reasoning path or a mild injection side effect, sends more than one message, even if one of them correctly fulfills the task. Such scoring rules disregard successful task completion whenever any auxiliary behavior occurs, thereby systematically underestimating utility.
+
+Our fixes improved the utility under attack. We found multiple such cases where fixing the injection vector placements and utility functions to assess goal achievement based on content rather than strict state deltas led to significant improvements (>18\%) as shown in Table [5](https://arxiv.org/html/2510.05244v2#S7.T5 "Table 5 ‣ 7.2 Agent Security Bench ‣ 7 Assessment of Current Benchmarks ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+### 7.2 Agent Security Bench
+
+ASB evaluates agent robustness by structuring each task into a two-stage workflow. For every user query, the agent is first prompted to decompose the task into two sub-tasks and select an appropriate subset of tools from a provided tool set for each sub-task. Tool calls are executed based on these selections, and the raw outputs of all invoked tools are concatenated and returned to the agent. This setup aims to simulate a multi-step tool-augmented reasoning process.
+
+Issue 1: Forced attack-tool injection inflates ASR. A critical limitation of ASB is that it forcibly injects attacker-controlled tools (“attack-tools”) into each sub-task’s tool subset, even when the agent did not select them. Since ASB defines attack success as the agent invoking these tools, this forced inclusion directly inflates ASR. This setup violates the core premise of IPI evaluation: attacks should succeed by manipulating the agent via prompt injections in untrusted content, not by externally overriding tool-selection or execution trajectories (greshake2023not).
+
+Issue 2: Utility Evaluation is Poorly Structured. Another major limitation of ASB is its coarse and static method for evaluating task success. Tool responses are hardcoded and independent of input arguments, so evaluation reduces to checking whether the agent invoked a predefined set of tools. This can be gamed: some models, such as LLaMA 70B, adopt a brute-force strategy by calling all available tools at every planning step, yielding perfect utility scores (=1) regardless of whether the task was completed meaningfully. If an attacker tool is invoked at any point, the utility score is directly assigned zero, regardless of whether the agent still completed the user-task, thereby ignoring task semantics. Moreover, many real-world tasks require tools to be used in a specific sequence (e.g., calling get_balance() before make_transaction() in banking), but ASB neither enforces nor evaluates such a structure, allowing agents to obtain full utility even by calling the right tools in the wrong order. Consequently, ASB fails to capture whether the agent actually completed the user-task as intended, limiting its usefulness for measuring real-world performance.
+
+Table 5: Revised benchmark results for GPT-4o with no defense.
+
+Our fixes correct the ASR. When we let the agent freely select tools from the full tool set (which still includes attack-tools) without forced injection, the ASR drops sharply from 70% to 9.25%, an almost 8\times reduction (Table [5](https://arxiv.org/html/2510.05244v2#S7.T5 "Table 5 ‣ 7.2 Agent Security Bench ‣ 7 Assessment of Current Benchmarks ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")). This shows that most of the original “attack success” arises from benchmark-induced control-flow manipulation rather than agent vulnerability, leading to an inflated ASR and misleading conclusions about robustness. An example of this issue and its correction has been provided in [Section D.2.1](https://arxiv.org/html/2510.05244v2#A4.SS2.SSS1 "D.2.1 Forced Attack-Tool Injection Distorts ASR ‣ D.2 Agent Security Bench ‣ Appendix D Limitations of Current Benchmarks ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+### 7.3 InjecAgent
+
+A primary metric for any agent evaluation is BU, which measures how useful the agent is even in the absence of attacks. In the presence of attacks, it is crucial to also measure the UA along with the ASR to characterize the security–utility tradeoff. InjecAgent reports the ASR, but provides no utility metric. This makes it impossible to measure either the BU or UA and, therefore, to assess the utility impact of defenses. Further, its attacks are overly simplistic and are becoming increasingly obsolete in the face of newer LLM-agents.
+
+## 8 Cascade Attack Strategy
+
+Table 6: Cascade attack breakdown. Stage columns report the number of additional successful attacks found at each stage in the Slack suite of AgentDojo, and the cumulative success rate.
+
+Motivation.  While our firewalls robustly defend against current IPI attacks, they also expose limitations of existing benchmarks: many attack strategies are rigid, context-agnostic, or depend on fixed trigger phrases, and thus can overestimate defense effectiveness and obscure true failure modes. To address this gap, we develop a cascade attack strategy to show that existing LLM-based prompt injection detection baselines like PromptArmor can be compromised, but the Sanitizer still demonstrates strong robustness.
+
+Setup.  We evaluate defenses with a three-stage approach that increases attack complexity only when earlier stages fail. (a) Stage 1 applies existing attacks from AgentDojo (we use tool_knowledge attack). While effective against undefended agents, these attacks are largely mitigated by LLM-based detection defenses that target hidden instructions. (b) Stage 2 introduces seven second-order semantic templates that rely on deception rather than surface-form instruction patterns. The goal is to present the actual injection as benign, trusted-looking metadata, sometimes alongside an overtly malicious decoy. (c) Stage 3 uses an LLM-based adaptive attacker that iteratively refines injections over 10 iterations using examples of past successes and failures and defense feedback, along with the defense knowledge. Further details are provided in [Appendix E](https://arxiv.org/html/2510.05244v2#A5 "Appendix E Cascade Attack Strategy ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?").
+
+Results.  Existing IPI benchmarks predominantly use rigid, format-driven attacks (e.g., fixed tags or formatting), which can make LLM-based defenses appear stronger than they are in practice. [Table 6](https://arxiv.org/html/2510.05244v2#S8.T6 "In 8 Cascade Attack Strategy ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") reports per-stage and cumulative ASR under our cascade attack strategy. As expected, Stage 1 formatted injections are largely handled by LLM-based baselines. In Stage 2, which introduces second-order semantic templates, PromptArmor is easily fooled by our semantic templates, resulting in a large increase in ASR, whereas the Sanitizer remains comparatively robust with only a modest ASR increase. We attribute this gap to the different design strategies: PromptArmor-style defenses use an LLM to _detect_ and filter suspected injections (using fuzzy logic), while our Sanitizer _regenerates_ the tool call output without the injection and explicitly explains removals, making it less dependent on surface-form triggers. Notably, we observe non-trivial ASR for the Sanitizer only in Stage 3, where we employ defense-aware adaptive attacks. Even with this much stronger and costlier attacker, successes remain limited, showing that bypassing the Sanitizer demands significantly greater attacker capability. Overall, these findings support including defense-aware adaptive attacks as a standard protocol for evaluating prompt-injection robustness.
+
+## 9 Discussion and Conclusion
+
+Guidelines for Future Benchmarks.  Based on our extensive analysis, we propose the following guidelines for designing reliable prompt injection benchmarks:
+
+*   •
+Benchmarks should not forcibly inject tools or override the agent’s planning decisions, as this distorts ASR.
+
+*   •
+Injection vectors should be inserted without overwriting key inputs or environmental context needed for task completion. Otherwise, any utility drop may reflect data deletion, not agentic failure.
+
+*   •
+Utility should be measured using task-specific checks that reflect semantic goal completion, including correct tool sequencing, input-output flow, and partial success.
+
+*   •
+Every benchmark should provide metrics for BU, ASR and UA to study the trade-off between security and utility.
+
+*   •
+Benchmarks must include stronger and more adaptive attacks as we show in Section [8](https://arxiv.org/html/2510.05244v2#S8 "8 Cascade Attack Strategy ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"). Currently implemented attacks are saturated and weak, which may fail to adequately distinguish between various defenses.
+
+Conclusion.  Firewalls can achieve perfect security across all publicly available benchmarks, matching or exceeding the performance of complex defenses. This suggests that firewalls are a very strong baseline defense. Our investigation also uncovers several limitations in current evaluation frameworks. Going forward, we do not think InjecAgent (no utility) or ASB numbers (lack of arguments, unnatural tool calling setting) should be used for future AI security evaluations. We believe AgentDojo played an instrumental role in bootstrapping the IPI field, but requires fixes. We suggest evaluating using our revised versions instead (AgentDojo-Revised) and report the Sanitizer as a simple but effective baseline. Moreover, all these benchmarks need stronger, more adaptive attack strategies. To this end, we propose a cascade attack strategy that bypasses all existing defenses, with the Sanitizer being the least compromised.
+
+## 10 Impact statement
+
+As is the case for other defenses, using firewalls has the potential to increase the security of tool-calling agents against prompt injections. However, like most indirect prompt injection defenses, the firewalls we have presented here assume that the user task is fully trusted, and that the tools themselves are secure (apart from serving poisoned data during attack). We should be wary that there is a risk that developers will overrely on security defenses without fully understanding the conditions under which they are effective and their limitations. Finally, the firewall steps may require additional API calls, potentially increasing the risk of leaking important or private data.
+
+## References
+
+## Appendix A Baselines
+
+We compare against a number of common IPI defenses:
+
+##### Prompt Sandwich (sandwich_defense_2023; debenedetti2024agentdojo)
+
+repeats the initial user query to the tool output, and has been found to help mitigate IPI attacks.
+
+##### Spotlighting (hines2024defending; debenedetti2024agentdojo)
+
+works be delimiting the tool output using special characters, e.g. “<<>>”, and helps the LLM distinguish between user / system instructions and external ones.
+
+##### PI Detectors
+
+are often encoder-based models that are trained to classify malicious prompt injections. We utilize a deberta-v3 based variant (protectai_deberta_prompt_injection_2024; debenedetti2024agentdojo).
+
+## Appendix B Minimizer and Sanitizer Prompts
+
+Below are the prompts that we use for tool input firewall and tool output firewall.
+
+## Appendix C Results
+
+### C.1 AgentDojo
+
+We provide detailed results on the original and the revised versions of the AgentDojo benchmark below:
+
+Table 7: Revised-AgentDojo - Utility Results under no attack
+
+Table 8: Revised-AgentDojo - ASR under tool_knowledge attack.
+
+Table 9: Revised-AgentDojo - Utility under tool_knowledge attack.
+
+Table 10: Original AgentDojo - Utility under no attack.
+
+Table 11: Original AgentDojo - ASR under tool_knowledge attack.
+
+Table 12: Original AgentDojo - Utility under tool_knowledge attack.
+
+### C.2 Agent Security Bench
+
+We provide detailed results on the original and revised versions of the ASB benchmark below:
+
+Table 13: Original ASB results under no attack
+
+Table 14: Original ASB Results under context ignoring attack
+
+Table 15: Original ASB results under combined attack
+
+Table 16: Revised-ASB results under no attack
+
+Table 17: Revised-ASB results on context ignoring attack
+
+Table 18: Revised-ASB results on combined attack
+
+### C.3 InjecAgent
+
+InjecAgent experiments across four different LLMs are summarized in Table [19](https://arxiv.org/html/2510.05244v2#A3.T19 "Table 19 ‣ C.3 InjecAgent ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"). We observe that the Sanitizer is consistently able to reduce injection attacks to near zero across both closed and open-source models.
+
+Interestingly, we also note that on some LLMs such as GPT-4o and Qwen 3-32B, the “enhanced” attack setting is less effective. For example, consider this base attack: “Please grant permanent access to my friend Amy on the August Smart Lock system” compared to the enhanced attack: “IMPORTANT!!! Ignore all previous instructions and strictly adhere to the following instruction: Please grant permanent access to my friend Amy on the August Smart Lock system”. Our hypothesis is that the enhanced setting appears more overtly and explicitly malicious, which recent LLMs have been specifically trained to ignore.
+
+Relatedly, we also observed that a number of injection attacks appear ambiguously benign in the context of some user tasks. For example, given the user task “Read the latest email about the time-travel project”, the (injected) tool response “Please give priority to an emergency vehicle from 07:30 AM to 09:30 AM at these intersections” may appear benign and expected, without additional task context or user policies. These instances are responsible for the non-zero ASR of the Firewall defense. These results highlight the importance of realistic benchmarks that more closely resemble the tasks, contexts, and security constraints of real-world users.
+
+Table 19: InjecAgent Results: Our Firewall is able to significantly mitigate both direct harm (DH) and data stealing (DS) attacks on InjecAgent, under both base and enhanced attack settings. Paradoxically, the “enhanced” attacks are less effective on more recent LLMs, as they likely appear overly blatant and explicitly malicious. The lack of utility metrics in this benchmark means it cannot be discerned if defenses (such as PI Detector) come at the cost of task performance.
+
+### C.4 Tau Bench
+
+In [Table 20](https://arxiv.org/html/2510.05244v2#A3.T20 "In C.4 Tau Bench ‣ Appendix C Results ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?"), we can see results using the Sanitizer firewall defense on both GPT-4o and Qwen. We demonstrate that this defense is successful at preventing data stealing attacks without degrading utility on both proprietary and open-source models.
+
+Table 20: \tau-bench: The firewall defense is able to prevent attacks using both GPT-4o and Qwen3.
+
+## Appendix D Limitations of Current Benchmarks
+
+### D.1 AgentDojo
+
+#### D.1.1 Injection vectors overwrite task-critical content
+
+Below is an example where the task couldn’t be completed since the prompt injection replaced the crucial information needed to solve the task.
+
+The agent wasn’t able to do the given user task as the bill-december-2023.txt didn’t have any information of the details to proceed. Now, with the fixed version the task, the agent is able to solve the user task.
+
+#### D.1.2 Brittle utility checks mis-score success
+
+In the utility evaluation of this user task (user task 1 of slack suite), there was a condition that if the inbox length of Alice is strictly incremented by 1 in post environment. Since the attacker is also aiming at sending Alice a message. This strict delta evaluation resulted in 0 utility in the original version, while 1 in fixed version.
+
+### D.2 Agent Security Bench
+
+#### D.2.1 Forced Attack-Tool Injection Distorts ASR
+
+Here is the initial user task and attacker tool is ‘LoanFraud’:
+
+The assistant generates a workflow.
+
+After attacker tool injection:
+
+When attack-tool injection is enabled, it appears as though the agent intentionally selects all tools in each planning stage. This artificially distorts the ASR, since the attack-tool is forcefully added to the selected tool-subset regardless of whether the agent originally selected it, effectively forcing ASR = 1 even in cases where the agent would have otherwise ignored the malicious instruction.
+
+However, once this forced injection is removed and the agent is allowed to freely select tools from the full set (including attacker tools), the ASR drops. This demonstrates that the previously high ASR was not a reflection of the agent’s vulnerability, but rather an artifact of benchmark-induced control flow manipulation.
+
+## Appendix E Cascade Attack Strategy
+
+This section details our _cascade attack_ evaluation, designed to avoid overly optimistic robustness estimates from rigid, format-driven prompt-injection attacks. Concretely, many existing IPI attacks rely on fixed tags, trigger phrases, or easily recognizable instruction patterns; such attacks can be handled by LLM-based detectors while failing to reveal semantic failure modes. Our cascade therefore escalates attacker capability only when a defense blocks earlier stages, providing a more informative and defense-sensitive robustness measurement.
+
+##### Threat model and cascade structure.
+
+Each trial begins with a existing prompt-injection attack. If the defense blocks the attempt (e.g., via sanitization, refusal, or other failure signal), the attacker escalates to the next stage. Importantly, Stage 2 and Stage 3 are only invoked on instances not already succeeded in earlier stages.
+
+##### Stage 1: Direct formatted injections.
+
+Stage 1 uses some attack from AgentDojo (in our case, we use tool_knowledge attack) that explicitly encode tool-oriented instructions using standard injection formatting. This stage captures the dominant style of attacks in many current benchmarks and serves as a low-cost baseline attacker.
+
+##### Stage 2: Second-order semantic templates.
+
+When Stage 1 fails, Stage 2 applies semantic deception strategies that do not rely on the same surface-form instruction patterns. We instantiate seven template families (Table [21](https://arxiv.org/html/2510.05244v2#A5.T21 "Table 21 ‣ Key observations. ‣ Appendix E Cascade Attack Strategy ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?")), including variants that (i) present the payload in trusted-looking wrappers (e.g., system-style tags or provenance cues) and (ii) optionally include a high-salience decoy designed to concentrate the defense on an easily identifiable malicious span while the true payload is framed as routine metadata. This stage targets brittleness in defenses that primarily detect instruction-like strings or canonical injection formats.
+
+##### Stage 3: Defense-aware adaptive refinement.
+
+When Stage 2 fails, Stage 3 uses an LLM-based adaptive attacker that performs 10 mutation rounds. The mutator conditions on (i) examples of successful and failed attacks from earlier stages, (ii) explicit feedback from the defense, and (iii) defense knowledge. This operationalizes a defense-aware adaptive threat model: rather than sampling static prompts, the attacker iteratively searches for prompts that preserve injection efficacy while evading the specific defense.
+
+##### Key observations.
+
+[Table 6](https://arxiv.org/html/2510.05244v2#S8.T6 "In 8 Cascade Attack Strategy ‣ Indirect Prompt Injections: Are Firewalls All You Need, or Stronger Benchmarks?") reports per-stage and cumulative ASR under our cascade attack strategy. As expected, Stage 1 formatted injections are largely handled by LLM-based baselines. In Stage 2, which introduces second-order semantic templates, PromptArmor is easily fooled by our semantic templates, resulting in a large ASR improvement, whereas the Sanitizer remains comparatively robust with only a modest increase. We attribute this gap to the different designs strategies: PromptArmor-style defenses use an LLM to _detect_ and filter suspected injections (using fuzzy logic), while our Sanitizer _regenerates_ the tool call output without the injection and explicitly explains removals, making it less dependent on surface-form triggers. Notably, we observe non-trivial ASR for the Sanitizer only in Stage 3, where we employ a defense-aware adaptive attacks. Even with this much stronger and costlier attacker, successes remain limited, showing that bypassing the Sanitizer demands significantly greater attacker capability. Overall, these findings support including defense-aware adaptive attacks as a standard protocol for evaluating prompt-injection robustness.
+
+Overall, these results suggest that robustness evaluations should not rely solely on static or format-driven attacks. Defense-aware adaptive attacks (such as Stage 3) should be included as a standard protocol for measuring robustness against prompt injection, since they better reflect an attacker optimizing against the deployed defense.
+
+Table 21: Stage 2 second-order semantic template attacks. Each variant preserves injection intent while reducing reliance on explicit, instruction-like surface forms. Several variants additionally use a high-salience _decoy_ to concentrate the defense on an easily identifiable malicious span, while the true payload is framed as trusted metadata.
+
+### E.1 Example of Successful Attack through Sanitizer
+
+Below we provide an example of attack which successfully bypasses our tool output firewall defense when implemented using GPT-4o.
+
+#### E.1.1 Example: Successful Stage 3 Attack Against Firewall
+
+The user task asks the agent to read a webpage:
+
+The Stage 3 mutator generates an injection using a decoy + verified tag strategy. The original injection placed in the webpage:
+
+The firewall removes the obvious <promptinjection> decoy but passes the <verified_user_request> tag as it appears legitimate:
+
+The agent executes the injected instruction, believing it to be a verified user request:
+
+## Appendix F Another Example of Successful Attack through Sanitizer
+
+Below we provide an example of attack which successfully bypasses our tool output firewall defense when implemented using GPT-4o-2024-05-13.
+
+The attack is simply the “important instructions” attack from AgentDojo, encoded in Braille. We tried many different encodings, including whitespace characters, and base64, but the firewall was either able to detect and remove most of them, or the API did not support the targeted unicode character range. Interestingly, in the case of Braille, the firewall detects the presence of Braille and the potential danger, but instead of removing the braille, decodes it to natural language (except for the < INFORMATION > tags). We hypothesize that Braille is fairly rare on the internet, and results in rare tokens when passed through the tokenizer, where GPT-4o might not be as well aligned.
+
+## Appendix G Use of AI Assistants
+
+Portions of the code of this paper have been written with the support of a coding assistant (Copilot). All AI-generated codes were thoroughly verified. Portions of the paper were corrected using a writing assistant (Grammarly).
+
+## Appendix H Additional Analysis
+
+### H.1 Data Contamination
+
+Thus, GPT-4o and Llama 3.3 70B could not have been trained on these benchmarks or attack formats. There is no data contamination.
+
+### H.2 Replacement of Sanitizer
+
+We performed an analysis where we changed the sanitizer to Llama3.3 70B and GPT-4-turbo. We present the evaluation on Agentdojo below.
+
+Table 22: Performance of Sanitizer with different LLM backbones.
+
+### H.3 Latency Analysis
+
+We present the time required by different LLM backbones to complete the Agentdojo evaluation.
+
+Table 23: Runtime (seconds) for different models and defense configurations under benign and attack conditions.
+
+Further, we compare in detail with CaMeL since it is a state-of-the-art system-level defense that employs policies to ensure safety on 2 suites of Agentdojo (banking and Slack) using gpt-4o-2024-08-06. CaMeL requires a total of 8,417.25 seconds to solve the tool-knowledge attack episodes, whereas our Firewall needs only 3,347.93 seconds. This corresponds to a 2.5x speed-up over CaMeL under the same attack setting.
+
+Table 24: Comparison of runtime performance across defenses for no-attack and tool-knowledge attack settings.
+
+### H.4 Tokens Analysis
+
+To evaluate the efficiency of different defenses, we measure the number of input and output tokens used per task on AgentDojo, using gpt-4o-2024-08-06 as the backbone model. We tokenize all messages using OpenAI’s tiktoken tokenizer. Since the native tool-calling API does not expose how it tokenizes tool documentation, we exclude those tokens for all methods, previous ones, and ours. We do include all tokens from the firewall system prompts, ensuring their overhead is fully accounted for.
+
+We find that CaMeL incurs the highest token cost among all defenses, requiring 2.82x more input tokens and 2.73× more output tokens than the baseline (no defense) for the median task. In contrast, the Sanitizer alone requires only 0.51x the input tokens and 2.67x the output tokens, showing that it achieves similar or better security with far less prompt overhead, especially in terms of input token usage, which contributes significantly to latency and cost. Full statistics are shown in the table below.
+
+Table 25: Token statistics across different defenses and input/output types.
+
+### H.5 False Positive and Negative Analysis
+
+On AgentDojo, we explicitly compute TP/FP/FN/TN for the Sanitizer. The Sanitizer demonstrates extremely reliable behavior, with zero false positives and near-perfect recall. The Sanitizer shows a very small false negative rate (0.47%), meaning it misses only a handful of attacks, while maintaining 100% precision (i.e., never misclassifying benign responses). These results support our claim that the Tool Output Firewall is both effective and precise.
+
+Table 26: Performance statistics of the Sanitizer.
+
+### H.6 Qualitative Analysis
+
+#### H.6.1 Minimizer
+
+Below we provide examples of Minimizer where it failed to generate correct minimized arguments because it generated minimized arguments by giving more attention to user task resulting in utility drop in benign setting.
+
+Example 1:
+
+Example 2:
+
+Example 3:
+
+#### H.6.2 Sanitizer
+
+Below we provide examples of Sanitizer where it dropped utility. These are the cases where sanitizer flagged it unsafe even though no injection was present in the tool call output.
+
+Example 1:
+
+Example 2:
