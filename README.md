@@ -99,6 +99,8 @@ export PYTHONDONTWRITEBYTECODE=1; python3 experiments/reanalyze_all_rounds.py &&
 
 No API key, network, model service or third-party Python package is required. Runtime depends on the machine; the dataset is small. The engine reconstructs state from logged calls/receipts, verifies original terminal states and scores, checks the trial order and frozen requests, and writes deterministic `experiments/results/diagnostic_numbers.json`. It fails closed on input-hash mismatches and unsupported observations. Tests also inspect PPTX XML, PDF objects/text, attribution, portability and data integrity using the standard library.
 
+Git attributes preserve the exact bytes of hash-pinned inputs and published JSON results, including when `core.autocrlf` is enabled. The generated JSON uses UTF-8 and LF line endings. If an older checkout reports input hash mismatches after updating, use a fresh clone rather than changing the inputs or their hashes.
+
 Compiling the report is **optional**, distinct from replay:
 
 ```sh

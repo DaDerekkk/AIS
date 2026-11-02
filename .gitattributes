@@ -1,0 +1,3 @@
+# Hash-pinned inputs and the published output must retain their exact bytes.
+experiments/data/** -text
+experiments/results/*.json -text

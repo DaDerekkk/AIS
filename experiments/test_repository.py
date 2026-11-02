@@ -2,10 +2,12 @@
 import copy
 import json
 import math
+import os
 from fractions import Fraction
 from pathlib import Path
 import socket
 import subprocess
+import tempfile
 import unittest
 from unittest import mock
 import urllib.request
@@ -155,7 +157,7 @@ class AuditTests(unittest.TestCase):
         prompts = self.data['scope_lock_audit']['prompts']
         self.assertEqual(len(prompts), 4 + 16 + 12)
         for p in prompts:
-            line = (audit.ROOT / p['source']).read_text().splitlines()[p['line'] - 1]
+            line = (audit.ROOT / p['source']).read_text(encoding='utf-8').splitlines()[p['line'] - 1]
             self.assertIn(json.dumps(p['user_goal'], ensure_ascii=False), line)
 
     def test_23_scope_gradient(self):
@@ -257,13 +259,26 @@ class AuditTests(unittest.TestCase):
         self.assertEqual(matrix[2]['snapshot_coverage'], 'publisher abstract and metadata only')
 
     def test_35_deterministic_output(self):
-        saved = json.loads((audit.HERE / 'diagnostic_numbers.json').read_text())
+        saved_path = audit.HERE / 'diagnostic_numbers.json'
+        saved = json.loads(saved_path.read_text(encoding='utf-8'))
         self.assertEqual(self.data, saved)
         self.assertEqual(audit.build(), self.data)
+        with tempfile.TemporaryDirectory(dir=audit.HERE) as tmp:
+            with mock.patch.object(audit, 'HERE', Path(tmp)):
+                audit.write_json('diagnostic_numbers.json', self.data)
+                self.assertEqual((Path(tmp) / 'diagnostic_numbers.json').read_bytes(), saved_path.read_bytes())
+
+    def test_build_with_non_utf8_default_encoding(self):
+        env = dict(os.environ, LC_ALL='C', PYTHONCOERCECLOCALE='0', PYTHONUTF8='0',
+                   PYTHONDONTWRITEBYTECODE='1')
+        result = subprocess.run([sys.executable, '-c', 'import reanalyze_all_rounds as audit; audit.build()'],
+                                cwd=audit.ROOT / 'experiments', env=env,
+                                capture_output=True, encoding='utf-8', errors='replace')
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_36_raw_line_anchors(self):
         for row in self.data['scorer_diagnostic']['v5_flagged_details'] + [h['episode'] for h in self.hits]:
-            lines = (audit.ROOT / row['source']).read_text().splitlines()
+            lines = (audit.ROOT / row['source']).read_text(encoding='utf-8').splitlines()
             self.assertEqual(json.loads(lines[row['start_line']-1])['episode_id'], row['episode_id'])
             final = json.loads(lines[row['final_response_line']-1])
             self.assertEqual(final['response']['choices'][0]['message']['content'], row['final_assistant_message'])
@@ -389,7 +404,7 @@ class AuditTests(unittest.TestCase):
         self.assertAlmostEqual(audit.wilson(10, 10)[0], 0.7224672, places=6)
 
     def test_51_repro_raw_anchors_and_calls(self):
-        lines = (audit.ROOT / self.repro()['source']).read_text().splitlines()
+        lines = (audit.ROOT / self.repro()['source']).read_text(encoding='utf-8').splitlines()
         for row in self.repro()['trials']:
             self.assertEqual(json.loads(lines[row['start_line']-1])['trial_id'], row['trial_id'])
             self.assertEqual(json.loads(lines[row['terminal_line']-1])['trial_id'], row['trial_id'])
@@ -404,7 +419,7 @@ class AuditTests(unittest.TestCase):
         self.assertNotIn('smoke', {t['trial_id'] for t in r['trials']})
 
     def test_53_primary_snapshot_provenance(self):
-        records = json.loads((audit.ROOT / (audit.DATA + 'literature_snapshots/provenance.json')).read_text())
+        records = json.loads((audit.ROOT / (audit.DATA + 'literature_snapshots/provenance.json')).read_text(encoding='utf-8'))
         for record in records:
             self.assertEqual(audit.digest(audit.ROOT / record['archived_path']), record['sha256'])
         for name in ('camel_v2.txt', 'instruction_hierarchy_v1.txt'):
@@ -423,7 +438,7 @@ class AuditTests(unittest.TestCase):
         for paper in self.data['literature_matrix']:
             anchor = paper['primary_text_snapshot']
             self.assertEqual(audit.digest(audit.ROOT / anchor['source']), anchor['sha256'])
-            self.assertTrue((audit.ROOT / anchor['source']).read_text().splitlines()[anchor['line']-1])
+            self.assertTrue((audit.ROOT / anchor['source']).read_text(encoding='utf-8').splitlines()[anchor['line']-1])
         hierarchy = next(r for r in self.data['literature_matrix'] if r['id'] == 'C1')
         self.assertIn('Aligned lower-privilege', hierarchy['delegation_implication'])
 
@@ -462,7 +477,7 @@ class AuditTests(unittest.TestCase):
 
     def test_44_prefix_interruption_anchors(self):
         for r in self.data['scorer_diagnostic']['prefixes']:
-            event = json.loads((audit.ROOT / r['source']).read_text().splitlines()[r['interruption_line']-1])
+            event = json.loads((audit.ROOT / r['source']).read_text(encoding='utf-8').splitlines()[r['interruption_line']-1])
             self.assertEqual(event['type'], 'interruption')
             self.assertEqual(event['active_episode'], r['episode_id'])
             self.assertGreater(r['interruption_line'], r['last_line'])
@@ -691,9 +706,9 @@ class RepositoryTests(unittest.TestCase):
         cls.texts=[]
         for p in sorted(cls.root.rglob('*')):
             if p.is_file() and '.git' not in p.parts and '__pycache__' not in p.parts:
-                cls.texts.extend((str(p.relative_to(cls.root)),t) for t in logical_texts(p))
+                cls.texts.extend((p.relative_to(cls.root).as_posix(),t) for t in logical_texts(p))
     def test_81_exact_top_level(self):
-        self.assertEqual({p.name for p in self.root.iterdir() if p.name!='.git'}, {'README.md','LICENSE','.gitignore','experiments','report','slides'})
+        self.assertEqual({p.name for p in self.root.iterdir() if p.name!='.git'}, {'README.md','LICENSE','.gitignore','.gitattributes','experiments','report','slides'})
     def test_82_zero_cjk_names(self):
         for p in self.root.rglob('*'):self.assertIsNone(CJK.search(str(p.relative_to(self.root))),p.name)
     def test_83_zero_cjk_text_and_binary_container_text(self):
@@ -713,9 +728,9 @@ class RepositoryTests(unittest.TestCase):
             self.assertFalse(p.is_symlink())
         self.assertEqual([p.name for p in self.root.rglob('*.md')],['README.md','published_table_transcription.md'])
     def test_87_readme_author_front(self):
-        t=(self.root/'README.md').read_text().splitlines();self.assertIn('Derek Sun',t[2]);self.assertIn('u3684284',t[2])
+        t=(self.root/'README.md').read_text(encoding='utf-8').splitlines();self.assertIn('Derek Sun',t[2]);self.assertIn('u3684284',t[2])
     def test_88_report_latex_author(self):
-        t=(self.root/'report/latex/main.tex').read_text();self.assertIn('Derek Sun (u3684284)',t);self.assertIn('Lead Author',t)
+        t=(self.root/'report/latex/main.tex').read_text(encoding='utf-8');self.assertIn('Derek Sun (u3684284)',t);self.assertIn('Lead Author',t)
     def test_89_report_exact_eight_A4_pages(self):
         self.assertEqual(len(self.report),8)
         for p in self.report:self.assertAlmostEqual(p['box'][2],595.28,places=1);self.assertAlmostEqual(p['box'][3],841.89,places=1)
@@ -725,7 +740,7 @@ class RepositoryTests(unittest.TestCase):
         for p in self.report:self.assertIn('DerekSun',re.sub(r'\s+','',p['text']))
     def test_92_report_numeric_source_hash(self):
         digest=audit.digest(audit.HERE/'diagnostic_numbers.json');self.assertIn(digest,re.sub(r'\s+','',self.report[7]['text']))
-        self.assertIn(digest,(self.root/'report/latex/build_latex.sh').read_text())
+        self.assertIn(digest,(self.root/'report/latex/build_latex.sh').read_text(encoding='utf-8'))
     def test_93_pdf_text_is_searchable(self):
         for p in self.report:self.assertGreater(len(p['text']),1500)
         for p in self.slides:self.assertGreater(len(p['text']),180)
@@ -761,21 +776,21 @@ class RepositoryTests(unittest.TestCase):
         for i in range(1,9):self.assertTrue((self.root/f'report/preview/page-{i}.png').read_bytes().startswith(b'\x89PNG'))
         for i in range(1,10):self.assertTrue((self.root/f'slides/preview/slide-{i:02}.png').read_bytes().startswith(b'\x89PNG'))
     def test_101_readme_links_resolve(self):
-        for link in re.findall(r'\]\(([^)]+)\)',(self.root/'README.md').read_text()):self.assertTrue((self.root/link).exists(),link)
+        for link in re.findall(r'\]\(([^)]+)\)',(self.root/'README.md').read_text(encoding='utf-8')):self.assertTrue((self.root/link).exists(),link)
     def test_102_data_manifest_exact_inventory(self):
-        expected=set(audit.Inputs().hashes);actual={str(p.relative_to(self.root)) for p in (self.root/'experiments/data').rglob('*')if p.is_file()};self.assertEqual(expected,actual)
+        expected=set(audit.Inputs().hashes);actual={p.relative_to(self.root).as_posix() for p in (self.root/'experiments/data').rglob('*')if p.is_file()};self.assertEqual(expected,actual)
     def test_103_all_export_hashes_and_transparency(self):
-        p=json.loads((self.root/(audit.DATA+'reference_extracts/portability_provenance.json')).read_text())
+        p=json.loads((self.root/(audit.DATA+'reference_extracts/portability_provenance.json')).read_text(encoding='utf-8'))
         for path,record in p['files'].items():
             self.assertEqual(audit.digest(self.root/path),record['export_sha256']);self.assertEqual(record['byte_identical'],record['original_sha256']==record['export_sha256'])
         self.assertIn('English metadata derivative',p['status'])
     def test_104_protocol_omissions_explicit(self):
         for p in (self.root/'experiments/data').rglob('*protocol.json'):
-            d=json.loads(p.read_text());self.assertIn('historical_dependencies_not_exported',d);self.assertIn('export_note',d)
+            d=json.loads(p.read_text(encoding='utf-8'));self.assertIn('historical_dependencies_not_exported',d);self.assertIn('export_note',d)
     def test_105_no_imports_outside_standard_library(self):
         import ast
         allowed={'collections','copy','hashlib','json','math','os','pathlib','re','statistics'}
-        t=ast.parse((self.root/'experiments/reanalyze_all_rounds.py').read_text())
+        t=ast.parse((self.root/'experiments/reanalyze_all_rounds.py').read_text(encoding='utf-8'))
         for n in ast.walk(t):
             if isinstance(n,ast.Import):self.assertTrue(all(x.name in allowed for x in n.names))
             elif isinstance(n,ast.ImportFrom):self.assertIn(n.module,allowed)
@@ -788,7 +803,7 @@ class RepositoryTests(unittest.TestCase):
         for p in (self.root/'report').rglob('*'):
             if p.is_file():self.assertIn(p.suffix,{'.tex','.sh','.pdf','.png'})
     def test_108_engine_does_not_repin_inputs(self):
-        t=(self.root/'experiments/reanalyze_all_rounds.py').read_text();self.assertEqual(t.count("write_json('diagnostic_numbers.json', data)"),1);self.assertNotIn("write_json('input_sha256.json'",t)
+        t=(self.root/'experiments/reanalyze_all_rounds.py').read_text(encoding='utf-8');self.assertEqual(t.count("write_json('diagnostic_numbers.json', data)"),1);self.assertNotIn("write_json('input_sha256.json'",t)
 
 if __name__ == '__main__':
     unittest.main()

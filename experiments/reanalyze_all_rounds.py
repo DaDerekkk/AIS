@@ -51,8 +51,8 @@ def digest(path):
 
 class Inputs:
     def __init__(self):
-        self.hashes = json.loads((HERE / 'input_sha256.json').read_text())
-        provenance = json.loads((ROOT / (DATA + 'reference_extracts/portability_provenance.json')).read_text())
+        self.hashes = json.loads((HERE / 'input_sha256.json').read_text(encoding='utf-8'))
+        provenance = json.loads((ROOT / (DATA + 'reference_extracts/portability_provenance.json')).read_text(encoding='utf-8'))
         self.original_hashes = {k: v['original_sha256'] for k, v in provenance['files'].items()}
         self.used = set()
         self.verify()
@@ -83,7 +83,7 @@ class Inputs:
             protocol = self.json(name)
             for relative, expected in protocol.get('files', {}).items():
                 path = (ROOT / name).parent / relative
-                key = str(path.resolve().relative_to(ROOT))
+                key = path.resolve().relative_to(ROOT).as_posix()
                 require(key in self.hashes, 'Unpinned frozen dependency: ' + key)
                 require(self.original_hashes[key] == expected, 'Historical freeze mismatch: ' + key)
                 results.append({'protocol': name, 'file': key, 'original_sha256': expected, 'export_sha256': self.hashes[key]})
@@ -398,7 +398,7 @@ def scope_audit(cases, rows):
     prompts = []
     for v, cs in cases.items():
         source = DIRS[v] + '/cases.json'
-        lines = (ROOT / source).read_text().splitlines()
+        lines = (ROOT / source).read_text(encoding='utf-8').splitlines()
         for c in cs:
             goals = c.get('user_goals', {'single': c.get('user_goal')})
             for authority, goal in goals.items():
@@ -834,7 +834,8 @@ def build():
 
 def write_json(name, value):
     require(Path(name).name == name, 'Output must be directly inside analysis directory')
-    (HERE / name).write_text(json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+    content = json.dumps(value, ensure_ascii=False, indent=2, sort_keys=True) + '\n'
+    (HERE / name).write_bytes(content.encode('utf-8'))
 
 
 if __name__ == '__main__':
