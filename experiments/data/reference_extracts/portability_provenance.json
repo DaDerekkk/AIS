@@ -253,6 +253,12 @@
       "export_sha256": "b0ca8805d8b2caa267584fad58deb39149151100ba19ed7188ea7347c892dcbb",
       "byte_identical": false,
       "transformation": "Static shipping_day and protected-output interface only; omitted personal-email CLI and irrelevant synthetic-secret demonstration"
+    },
+    "experiments/data/followup_2026_11_02/reasoning_effort_ablation.json": {
+      "original_sha256": "b3c149a002811b1934c9b1372982a4420fc1609ecd1aadd3db3c9a932a0f7e66",
+      "export_sha256": "b3c149a002811b1934c9b1372982a4420fc1609ecd1aadd3db3c9a932a0f7e66",
+      "byte_identical": true,
+      "transformation": "None"
     }
   },
   "protocol_scope": "Exported replay dependencies only. Original runner/source-code freeze dependencies are listed but not distributed or claimed reverified here."

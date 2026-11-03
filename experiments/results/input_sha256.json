@@ -1,4 +1,5 @@
 {
+  "experiments/data/followup_2026_11_02/reasoning_effort_ablation.json": "b3c149a002811b1934c9b1372982a4420fc1609ecd1aadd3db3c9a932a0f7e66",
   "experiments/data/literature_snapshots/agentdojo_html_cached.txt": "1eee16e9b1fae7fe1e856af2e91cbdb9b70679abdc6dbc46080ef8e526a4a45d",
   "experiments/data/literature_snapshots/agentdojo_pdf_cached.txt": "bc6ddba2f0c5a56ca3ece985508f48f565a95e1430fa7862b8d2224a228db19c",
   "experiments/data/literature_snapshots/camel_v2.txt": "5749e55546a8a5159491adeaa9c65f23c11b274ff32b885ab78b085fd50ab6cd",
@@ -11,7 +12,7 @@
   "experiments/data/literature_snapshots/sources_A.json": "840aa9622d545060d33d9cd546d18c730da4f7149cd89dca4f0359ac5e0dc698",
   "experiments/data/literature_snapshots/sources_B.json": "e9b2ef748e8729870bb53427722846afa17b907c3037ef9eeb7e0b90f3382f8e",
   "experiments/data/literature_snapshots/spotlighting.txt": "adfa5d5fda3b55ef4541a59930928404ec542c8088cfefee3b4fe520fb427ea2",
-  "experiments/data/reference_extracts/portability_provenance.json": "45c68e151230e25607e2df2a0faf6dba25bb869696bf0128446eea6aa3180498",
+  "experiments/data/reference_extracts/portability_provenance.json": "fcea892dc34ed4cf11e700d6b5ddeb7065cb2d739602b80684a817d16a959ec6",
   "experiments/data/reference_extracts/published_table_transcription.md": "d85ee5ee88b030afc0c4de19e642a4629919c439abefef3163ef5472b909411d",
   "experiments/data/reference_extracts/rag_agent_reference.py": "b0ca8805d8b2caa267584fad58deb39149151100ba19ed7188ea7347c892dcbb",
   "experiments/data/repro_2026_10_30/freeze_manifest.json": "55e4023f3977b8dd4f96279a01f9ac7501ae702b3871e27973300c94ccb66178",

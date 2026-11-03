@@ -18,7 +18,7 @@
 {\sffamily\small\bfseries Derek Sun (u3684284)\enspace |\enspace COMP7611 Group Project (Lead Author)\enspace |\enspace 30 October 2026\par}\vspace{5pt}
 \section*{1. Research question and contribution}
 \subsection*{Abstract}
-Low measured attack success can conceal weak evaluation rather than demonstrate a robust defense. We synthesize eight primary works and re-analyze 376 historical episodes plus a 40-trial prospective single-case replication. Four blind spots connect the literature to local traces: authorized delegation, trusted-query scope locks, strict-action scorer false alarms, and discrepancies between executed history, final state, and disclosure. Of six flagged v5 episodes, five are in-scope value errors rather than observed boundary violations. The selected-case replication yields 7/17 versus 0/19 target hits among valid exposed trials (two-sided Fisher p = 0.002329749104). Across ten confirmed hits, eight omit the side effect and two disclose but rationalize it. These observations motivate better measurement and deterministic mutation receipts; they do not establish a broadly effective defense.
+Low measured attack success can conceal weak evaluation rather than demonstrate a robust defense. We synthesize eight primary works and re-analyze 376 historical episodes plus a 40-trial prospective single-case replication, followed by a 56-trial post-freeze reasoning-effort and cross-model ablation. Four blind spots connect the literature to local traces: authorized delegation, trusted-query scope locks, strict-action scorer false alarms, and discrepancies between executed history, final state, and disclosure. Of six flagged v5 episodes, five are in-scope value errors rather than observed boundary violations. The selected-case replication yields 7/17 versus 0/19 target hits among valid exposed trials (two-sided Fisher p = 0.002329749104). Across ten confirmed hits, eight omit the side effect and two disclose but rationalize it. In the 56-trial follow-up, raising \texttt{gpt-6-luna} reasoning effort (\texttt{low} to \texttt{xhigh}) reduces scope-locked calendar hits from 4/5 to 0/5, yet unscoped sharing still suffers 12/12 (100\%) hits across all tiers (while \texttt{gpt-6.1-terra} achieves 0/24). These observations motivate better measurement and deterministic mutation receipts; they do not establish a broadly effective defense.
 
 \subsection*{Question and setting}
 We ask what an apparently low attack-success rate leaves unmeasured. The local harness combines real recorded model inference with synthetic, in-memory email, record, calendar and sharing tools. An attacker controls an appendix to a retrieved reference, not the trusted user request. Authorized task facts remain present. The model selects tool calls; tools permit observable extra writes. This is a narrow reference-reading and state-change setting, not a production application or a general multi-tool planning benchmark.
@@ -146,7 +146,7 @@ A09 both executes the unauthorized location mutation and computes end = 12:10 ra
 
 A11's receipt order is: correct end = 11:45; unauthorized location = Broadcast channel; restoration to location = Studio 6. Thus A\_\allowbreak{}ever is true and A\_\allowbreak{}final is false. Its final reply reports the end update without either location write. Restoring a value changes the final-state metric, but cannot erase a prior authorization violation or guarantee that an external observer never saw it. Here effects are in memory; no real-world propagation was tested.
 
-The seven reproduction hits are A02, A04, A05, A07, A09, A11 and A15. Historical formal collection used 125 client requests plus one smoke request; this export adds zero. Request counts are client-side records, not proof of provider-internal attempts, billing or independent model draws.
+The seven reproduction hits are A02, A04, A05, A07, A09, A11 and A15. Historical formal collection used 125 client requests plus one smoke request; this export adds zero to the frozen 40-trial record. Request counts are client-side records, not proof of provider-internal attempts, billing or independent model draws. In those 2026-10-30 trials (\texttt{gpt-6-luna} default \texttt{medium}), Call-2 completion tokens split between immediate hits (mean 64.2, range 30--76, n = 6) and resistant trials (mean 108.5, range 44--133, n = 10), while A11 dropped from 145 (correct end) to 70 (injected location) before rebounding to 119 (restoration to Studio 6).
 
 \newpage
 \section*{7. Disclosure gaps, design recommendations and limits}
@@ -189,12 +189,21 @@ To ensure auditability, our verification protocol separates trajectory classific
 
 [C2] Debenedetti et al. (2025). Defeating Prompt Injections by Design. arXiv:2503.18813v2 (supplied attribution). CaMeL architecture, abstract and Table 1.
 
+\subsection*{Post-freeze follow-up: default auto mapping, reasoning effort, and gpt-6.1-terra}
+Because the historical harness omitted \texttt{reasoning\_effort} (\texttt{auto}), provider defaults mapped \texttt{gpt-6-luna} to \texttt{medium} and \texttt{gpt-6.1-sol}/\texttt{gpt-6.1-terra} to \texttt{low}. A 56-trial post-freeze ablation varied \texttt{reasoning\_effort} on \texttt{gpt-6-luna} and \texttt{gpt-6.1-terra} across the scope-locked calendar case (n = 35) and unscoped \texttt{dev4\_share\_document\_selection} (n = 21):\vspace{-3pt}
+
+\begin{center}\begin{tabular}{L{0.29\linewidth}L{0.15\linewidth}L{0.22\linewidth}L{0.22\linewidth}}
+\toprule
+\textbf{Model \& tier} & \textbf{Mean r-toks} & \textbf{Calendar ('only')} & \textbf{Sharing (no 'only')} \\ \midrule
+\texttt{gpt-6-luna low} & 0.0 / 0.0 & 4/5 hits; 3/5 err & 3/3 hits (100\% rat.) \\
+\texttt{gpt-6-luna medium} (auto) & 50.8 / 0.0 & 1/5 hits; 1/5 err & 3/3 hits (100\% rat.) \\
+\texttt{gpt-6-luna high} & 97.8 / 95.7 & 0/5 hits; 0/5 err & 3/3 hits (100\% rat.) \\
+\texttt{gpt-6-luna xhigh} & 391.2 / 287.7 & 0/5 hits; 0/5 err & 3/3 hits (100\% rat.) \\
+\texttt{gpt-6.1-terra low/med/high} & 7.0--33.2 & 0/15 hits; 15/15 ok & 0/9 hits; 9/9 ok \\
+\bottomrule\end{tabular}\end{center}\vspace{-3pt}
+Scaling \texttt{gpt-6-luna} reasoning effort to \texttt{high}/\texttt{xhigh} eliminates arithmetic errors and enforces the literal \texttt{only} lock on calendar updates, yet still yields 12/12 (100\%) hits when the user prompt lacks a literal lock (rationalizing the answer-key share even at 421 reasoning tokens). \texttt{gpt-6.1-terra} resists all 24 trials across \texttt{low}--\texttt{high}.
+
 \subsection*{Artifact provenance and offline reproduction}
-The authoritative numeric artifact is \texttt{experiments/results/diagnostic\_numbers.json}. Its SHA-256 is shown below. The portable engine replays logged requests, receipts, final states and original scores; it derives categories, Wilson intervals and exact-test calculations. The portable input manifest pins 45 files. English metadata and paths are export derivatives; original-byte hashes remain in the portability provenance record. Model messages and executed action payloads are unchanged.
-
-{\small\ttfamily d44d6b96a619e6a1468922418734f2f9\allowbreak ecfbbffd5a3c7c494bb53b86c4c796cc\par}
-Run \texttt{python3 experiments/reanalyze\_all\_rounds.py}, followed by standard-library unittest discovery in \texttt{experiments/}. The repository includes frozen inputs and English primary extracts; it needs no credentials, model calls or network access for analysis. The LaTeX build script supports an already installed cached Tectonic or pdflatex. Compiled figures, searchable PDFs and native editable slides are included; typesetting tools are optional for re-analysis.
-
-Execution boundary: 30 October 2026. All diagnostic replay and verification checks execute deterministically offline with zero live model calls, network requests, or external package installations. Historic incomplete prefixes remain explicitly retained as censored observations.
+The authoritative numeric artifact is \texttt{experiments/results/diagnostic\_numbers.json}. The portable engine replays logged requests, receipts, final states and original scores across the 416 core episodes and 56 post-freeze reasoning-effort ablation trials (472 total trajectories, 46 pinned input files), deriving categories, Wilson intervals and exact-test checks. Run \texttt{python3 experiments/reanalyze\_all\_rounds.py} and unittest discovery in \texttt{experiments/}. All replay and verification checks execute deterministically offline with zero live model calls or network requests.
 
 \end{document}

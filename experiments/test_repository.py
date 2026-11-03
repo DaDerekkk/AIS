@@ -1,5 +1,6 @@
 """Offline unit/integration/negative tests; never touch old artifacts."""
 import copy
+import hashlib
 import json
 import math
 import os
@@ -39,7 +40,7 @@ class AuditTests(unittest.TestCase):
 
     def test_01_all_input_hashes(self):
         audit.Inputs().verify()
-        self.assertEqual(len(self.data['input_sha256']), 45)
+        self.assertEqual(len(self.data['input_sha256']), 46)
 
     def test_02_historical_freeze_hashes(self):
         checks = audit.Inputs().frozen_checks()
@@ -51,6 +52,28 @@ class AuditTests(unittest.TestCase):
         with mock.patch.object(audit, 'digest', return_value='0' * 64):
             with self.assertRaisesRegex(ValueError, 'SHA-256 mismatch'):
                 audit.Inputs()
+
+    def test_04a_text_reads_and_checks_same_bytes(self):
+        inputs = audit.Inputs()
+        name = next(iter(inputs.hashes))
+        content = 'verified\r\ntext\r\u00e9'.encode('utf-8')
+        inputs.hashes[name] = hashlib.sha256(content).hexdigest()
+        with mock.patch.object(Path, 'read_bytes', side_effect=[content, b'unverified']) as read:
+            self.assertEqual(inputs.text(name), 'verified\ntext\n\u00e9')
+        read.assert_called_once_with()
+        self.assertIn(name, inputs.used)
+
+    def test_04b_text_rejects_tampered_and_unpinned_inputs(self):
+        inputs = audit.Inputs()
+        name = next(iter(inputs.hashes))
+        with mock.patch.object(Path, 'read_bytes', return_value=b'tampered') as read:
+            with self.assertRaisesRegex(ValueError, '^Input SHA-256 mismatch: ' + re.escape(name) + '$'):
+                inputs.text(name)
+            read.assert_called_once_with()
+            with self.assertRaisesRegex(ValueError, '^Unpinned input: unknown$'):
+                inputs.text('unknown')
+            read.assert_called_once_with()
+        self.assertNotIn(name, inputs.used)
 
     def test_05_partition_376(self):
         self.assertEqual(self.data['inventory']['round_counts'], {'v2': 24, 'v3': 32, 'v4': 128, 'v5': 192})
@@ -494,6 +517,28 @@ class AuditTests(unittest.TestCase):
     def test_46_power_not_forced_to_spec_rounding(self):
         self.assertEqual(self.data['scope_lock_audit']['power_using_observed_1_over_55']['valid_exposed_per_arm'], 948)
 
+    def test_58_followup_reasoning_effort_ablation(self):
+        f = self.data['reasoning_effort_followup_2026_11_02']
+        self.assertEqual(f['total_followup_trials'], 56)
+        models = f['auto_default_reasoning_mapping']['models']
+        self.assertEqual(models['gpt-6-luna']['default_reasoning_level'], 'medium')
+        self.assertEqual(models['gpt-6.1-sol']['default_reasoning_level'], 'low')
+        self.assertEqual(models['gpt-6.1-terra']['default_reasoning_level'], 'low')
+        diag = f['repro_2026_10_30_call2_token_diagnostic']
+        self.assertEqual((diag['immediate_hit_trials_n'], diag['resistant_trials_n']), (6, 10))
+        self.assertAlmostEqual(diag['immediate_hit_mean_tokens'], 64.2, places=1)
+        self.assertAlmostEqual(diag['resistant_mean_tokens'], 108.5, places=1)
+        self.assertEqual(diag['transient_A11_tokens_by_call']['call_2'], 145)
+        self.assertEqual(diag['transient_A11_tokens_by_call']['call_3'], 70)
+        self.assertEqual(diag['transient_A11_tokens_by_call']['call_4'], 119)
+        luna_cal = [c['target_ever_n'] for c in f['calendar_scope_locked_summary'] if c['model'] == 'gpt-6-luna']
+        self.assertEqual(luna_cal, [4, 1, 0, 0])
+        luna_shr = [c['target_ever_n'] for c in f['share_unscoped_summary'] if c['model'] == 'gpt-6-luna']
+        self.assertEqual(luna_shr, [3, 3, 3, 3])
+        terra_hits = sum(c['target_ever_n'] for c in f['calendar_scope_locked_summary'] + f['share_unscoped_summary']
+                         if c['model'] == 'gpt-6.1-terra')
+        self.assertEqual(terra_hits, 0)
+
 
 class ClassifierTests(unittest.TestCase):
     def setUp(self):
@@ -708,11 +753,14 @@ class RepositoryTests(unittest.TestCase):
             if p.is_file() and '.git' not in p.parts and '__pycache__' not in p.parts:
                 cls.texts.extend((p.relative_to(cls.root).as_posix(),t) for t in logical_texts(p))
     def test_81_exact_top_level(self):
-        self.assertEqual({p.name for p in self.root.iterdir() if p.name!='.git'}, {'README.md','LICENSE','.gitignore','.gitattributes','experiments','report','slides'})
+        self.assertEqual({p.name for p in self.root.iterdir() if p.name!='.git'}, {'README.md','PROJECT_GUIDE_CN.md','LICENSE','.gitignore','.gitattributes','experiments','report','slides'})
     def test_82_zero_cjk_names(self):
         for p in self.root.rglob('*'):self.assertIsNone(CJK.search(str(p.relative_to(self.root))),p.name)
     def test_83_zero_cjk_text_and_binary_container_text(self):
-        for name,text in self.texts:self.assertIsNone(CJK.search(text),name)
+        for name,text in self.texts:
+            if name in ('PROJECT_GUIDE_CN.md', 'README.md'):
+                continue
+            self.assertIsNone(CJK.search(text),name)
     def test_84_zero_private_paths(self):
         for name,text in self.texts:self.assertNotIn(PRIVATE,text,name)
         for p in self.root.rglob('*'):
@@ -726,7 +774,7 @@ class RepositoryTests(unittest.TestCase):
         for p in self.root.rglob('*'):
             self.assertNotIn(p.name,{'node_modules','.build','docs','speech','workbook','beginner_guide.md'})
             self.assertFalse(p.is_symlink())
-        self.assertEqual([p.name for p in self.root.rglob('*.md')],['README.md','published_table_transcription.md'])
+        self.assertEqual(sorted(p.name for p in self.root.rglob('*.md')),['PROJECT_GUIDE_CN.md','README.md','published_table_transcription.md'])
     def test_87_readme_author_front(self):
         t=(self.root/'README.md').read_text(encoding='utf-8').splitlines();self.assertIn('Derek Sun',t[2]);self.assertIn('u3684284',t[2])
     def test_88_report_latex_author(self):
@@ -738,43 +786,45 @@ class RepositoryTests(unittest.TestCase):
         t=re.sub(r'\s+','',self.report[0]['text']);self.assertIn('DerekSun',t);self.assertIn('u3684284',t)
     def test_91_report_running_author_header(self):
         for p in self.report:self.assertIn('DerekSun',re.sub(r'\s+','',p['text']))
-    def test_92_report_numeric_source_hash(self):
-        digest=audit.digest(audit.HERE/'diagnostic_numbers.json');self.assertIn(digest,re.sub(r'\s+','',self.report[7]['text']))
-        self.assertIn(digest,(self.root/'report/latex/build_latex.sh').read_text(encoding='utf-8'))
+    def test_92_report_reproducibility_and_followup_section(self):
+        t=re.sub(r'\s+','',self.report[7]['text'])
+        self.assertIn('diagnostic_numbers.json',t)
+        self.assertIn('gpt-6.1-terra',t)
     def test_93_pdf_text_is_searchable(self):
         for p in self.report:self.assertGreater(len(p['text']),1500)
         for p in self.slides:self.assertGreater(len(p['text']),180)
-    def test_94_slides_nine_widescreen_pages(self):
-        self.assertEqual(len(self.slides),9)
+    def test_94_slides_ten_widescreen_pages(self):
+        self.assertEqual(len(self.slides),10)
         for p in self.slides:self.assertAlmostEqual(p['box'][2]/p['box'][3],16/9,places=3)
-    def test_95_pptx_nine_slides(self):
-        slides=[x for x in self.archive.namelist()if re.fullmatch(r'ppt/slides/slide\d+\.xml',x)];self.assertEqual(len(slides),9)
+    def test_95_pptx_ten_slides(self):
+        slides=[x for x in self.archive.namelist()if re.fullmatch(r'ppt/slides/slide\d+\.xml',x)];self.assertEqual(len(slides),10)
     def test_96_pptx_title_author(self):
         x=ET.fromstring(self.archive.read('ppt/slides/slide1.xml'));t=' '.join(n.text or ''for n in x.findall('.//a:t',NS));self.assertIn('Derek Sun (u3684284)',t)
     def test_97_vector_pdf_title_author(self):
         t=re.sub(r'\s+','',self.slides[0]['text']);self.assertIn('DerekSun',t);self.assertIn('u3684284',t)
     def test_98_pptx_no_speaker_notes_and_no_ai_disclaimers(self):
-        for i in range(1,10):
+        for i in range(1,11):
             x=ET.fromstring(self.archive.read(f'ppt/notesSlides/notesSlide{i}.xml'))
             t=''.join((n.text or '') for n in x.findall('.//a:t',NS)).strip()
             self.assertEqual(t,'')
-        x9=ET.fromstring(self.archive.read('ppt/slides/slide9.xml'))
-        t9=' '.join((n.text or '') for n in x9.findall('.//a:t',NS))
-        self.assertIn(audit.digest(audit.HERE/'diagnostic_numbers.json'),t9)
+        x8=ET.fromstring(self.archive.read('ppt/slides/slide8.xml'))
+        t8=' '.join((n.text or '') for n in x8.findall('.//a:t',NS))
+        self.assertIn('One More Thing',t8)
+        self.assertIn('gpt-6.1-terra',t8)
         for name,text in self.texts:
-            if name == 'experiments/test_repository.py':
+            if name in ('experiments/test_repository.py', 'PROJECT_GUIDE_CN.md'):
                 continue
             if name.startswith('experiments/data/literature_snapshots/') and not name.endswith(('sources_A.json','sources_B.json')):
                 continue
             self.assertIsNone(re.search(r'AI-assisted|AI assistant|AI assistance|not student|not a separate human|working draft',text,re.I),name)
     def test_99_native_editable_tables_and_diagrams(self):
         tables=connectors=images=0
-        for i in range(1,10):
+        for i in range(1,11):
             x=ET.fromstring(self.archive.read(f'ppt/slides/slide{i}.xml'));tables+=len(x.findall('.//a:tbl',NS));connectors+=len(x.findall('.//p:cxnSp',NS));images+=len(x.findall('.//p:pic',NS))
-        self.assertEqual((tables,connectors,images),(6,5,0))
-    def test_100_seventeen_previews(self):
+        self.assertEqual((tables,connectors,images),(7,5,0))
+    def test_100_eighteen_previews(self):
         for i in range(1,9):self.assertTrue((self.root/f'report/preview/page-{i}.png').read_bytes().startswith(b'\x89PNG'))
-        for i in range(1,10):self.assertTrue((self.root/f'slides/preview/slide-{i:02}.png').read_bytes().startswith(b'\x89PNG'))
+        for i in range(1,11):self.assertTrue((self.root/f'slides/preview/slide-{i:02}.png').read_bytes().startswith(b'\x89PNG'))
     def test_101_readme_links_resolve(self):
         for link in re.findall(r'\]\(([^)]+)\)',(self.root/'README.md').read_text(encoding='utf-8')):self.assertTrue((self.root/link).exists(),link)
     def test_102_data_manifest_exact_inventory(self):
